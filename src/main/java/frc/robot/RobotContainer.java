@@ -187,7 +187,7 @@ public class RobotContainer {
         if(RobotBase.isReal()) {
             m_driveTrain.setDefaultCommand(new SequentialCommandGroup(new SetDriveShifters(m_driveTrain, Constants.DriveConstants.inSlowGear), 
             new SetArcadeDrive(m_driveTrain, m_intake,
-                    () -> leftJoystick.getRawAxis(1),
+                    () -> -leftJoystick.getRawAxis(1),
                     () -> rightJoystick.getRawAxis(0))));
 
             m_led.setDefaultCommand(new GetSubsystemStates(this, m_led, m_indexer, m_intake, m_vision, m_turret, m_climber, m_colorSensor, m_controls));
