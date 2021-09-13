@@ -33,9 +33,9 @@ public class Shooter extends SubsystemBase {
      */
     // PID loop constants
     private final double kF = 0.0523;  // 0.054      //  Gree: 0.0475;
-    private final double kP = 0.35;      //  0.4       //  0.00047
-    private final double kI = 0.0;                    //  0.0000287
-    private final double kD = 3.5;
+    private final double kP = 0.25;      //  0.4       //  0.00047
+    private final double kI = 0.00008;                    //  0.0000287
+    private final double kD = 7;
 
 //    private double kF = 0.0523;  // 0.054      //  Gree: 0.0475;
 //    private double kP = 0.6;      //  0.4       //  0.00047
@@ -55,7 +55,7 @@ public class Shooter extends SubsystemBase {
     };
     private final PowerDistributionPanel m_pdp;
     private final Vision m_vision;
-    public int kI_Zone = 100;
+    public int kI_Zone = 400;
     public int kAllowableError = 50;
     public double rpmOutput;
     public double rpmTolerance = 50.0;
