@@ -35,11 +35,11 @@ public class SetDriveShifters extends CommandBase {
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {
-        if(RobotBase.isReal()) {
-            if (m_driveTrain.getDriveShifterStatus() != m_shifterState)
-                m_driveTrain.setDriveShifterStatus(m_shifterState);
-        } else
-            m_driveTrain.setDriveShifterStatus(m_shifterState);
+//        if(RobotBase.isReal()) {
+//            if (m_driveTrain.getDriveShifterStatus() != m_shifterState)
+//                m_driveTrain.setDriveShifterStatus(m_shifterState);
+//        } else
+//            m_driveTrain.setDriveShifterStatus(m_shifterState);
     }
 
     // Called every time the scheduler runs while the command is scheduled.

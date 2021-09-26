@@ -40,13 +40,14 @@ import frc.robot.constants.Constants.DriveConstants;
 
 
 public class DriveTrain extends SubsystemBase {
-    private final double gearRatioHigh = 1.0 / 14.14;
-    private final double gearRatioLow = 1.0 / 7.49;
+//    private final double gearRatioHigh = 1.0 / 14.14;
+//    private final double gearRatioLow = 1.0 / 7.49;
+    private final double gearRatio = 1.0 / 5.0;
     private final double wheelDiameter = 0.5;
 
     private final double kS = DriveConstants.ksVolts;
     private final double kV = DriveConstants.kvVoltSecondsPerMeter;
-    private final double kA = DriveConstants.kaVoltSecondsSquaredPerMeter;;
+    private final double kA = DriveConstants.kaVoltSecondsSquaredPerMeter;
 
     public double kP = 2.37;//3/21/21//Constants.DriveConstants.inSlowGear ? 1.89 : 2.74; //1.33
     public double kI = 0;
@@ -78,8 +79,8 @@ public class DriveTrain extends SubsystemBase {
             false
     };
 
-    DoubleSolenoid driveTrainShifters = new DoubleSolenoid(Constants.pcmOne, Constants.driveTrainShiftersForward, Constants.driveTrainShiftersReverse);
-    private boolean m_driveShifterState;
+//    DoubleSolenoid driveTrainShifters = new DoubleSolenoid(Constants.pcmOne, Constants.driveTrainShiftersForward, Constants.driveTrainShiftersReverse);
+//    private boolean m_driveShifterState;
 
     private final AHRS navX = new AHRS(SerialPort.Port.kMXP);
 
@@ -224,7 +225,7 @@ public class DriveTrain extends SubsystemBase {
     }
 
     public double getWheelDistanceMeters(int sensorIndex) {
-        double gearRatio = getDriveShifterStatus() ? gearRatioHigh : gearRatioLow;
+//        double gearRatio = getDriveShifterStatus() ? gearRatioHigh : gearRatioLow;
 //        double gearRatio = gearRatioHigh;
 
         if(RobotBase.isReal())
@@ -347,12 +348,12 @@ public class DriveTrain extends SubsystemBase {
         }
     }
 
-    public boolean getDriveShifterStatus() {
-        return m_driveShifterState;
-    }
+//    public boolean getDriveShifterStatus() {
+//        return m_driveShifterState;
+//    }
 
-    public void setDriveShifterStatus(boolean state) {
-        m_driveShifterState = state;
+//    public void setDriveShifterStatus(boolean state) {
+//        m_driveShifterState = state;
 //        double gearRatio = state ? Constants.DriveConstants.kDriveGearingHigh : Constants.DriveConstants.kDriveGearingLow ;
 //        double kEncoderDistancePerPulse = state ? Constants.DriveConstants.kEncoderDistancePerPulseHigh : Constants.DriveConstants.kEncoderDistancePerPulseLow;
 
@@ -360,11 +361,11 @@ public class DriveTrain extends SubsystemBase {
 //        m_leftEncoder.setDistancePerPulse(kEncoderDistancePerPulse);
 //        m_rightEncoder.setDistancePerPulse(kEncoderDistancePerPulse);
 
-        driveTrainShifters.set(state ? DoubleSolenoid.Value.kForward : DoubleSolenoid.Value.kReverse);
-    }
+//        driveTrainShifters.set(state ? DoubleSolenoid.Value.kForward : DoubleSolenoid.Value.kReverse);
+//    }
 
     public DifferentialDriveWheelSpeeds getSpeeds() {
-        double gearRatio = getDriveShifterStatus() ? gearRatioHigh : gearRatioLow;
+//        double gearRatio = getDriveShifterStatus() ? gearRatioHigh : gearRatioLow;
 //        double gearRatio = gearRatioHigh;
         double leftMetersPerSecond = 0, rightMetersPerSecond = 0;
 
@@ -386,8 +387,8 @@ public class DriveTrain extends SubsystemBase {
     }
 
     public double getTravelDistance() {
-        double gearRatio = getDriveShifterStatus() ? gearRatioHigh : gearRatioLow;
-//        double gearRatio = gearRatioHigh;
+//        double gearRatio = getDriveShifterStatus() ? gearRatioHigh : gearRatioLow;
+//        double gearRatio = gearRatio;
         double leftMeters, rightMeters;
 
         if(RobotBase.isReal()) {
@@ -465,8 +466,8 @@ public class DriveTrain extends SubsystemBase {
                     Units.metersToFeet(getSpeeds().leftMetersPerSecond));
             SmartDashboardTab.putNumber("DriveTrain", "rightSpeed",
                     Units.metersToFeet(getSpeeds().rightMetersPerSecond));
-            SmartDashboardTab.putBoolean("DriveTrain","high gear",
-                    getDriveShifterStatus());
+//            SmartDashboardTab.putBoolean("DriveTrain","high gear",
+//                    getDriveShifterStatus());
 
             SmartDashboardTab.putNumber("Turret", "Robot Angle", getAngle());
         } else {
@@ -555,7 +556,7 @@ public class DriveTrain extends SubsystemBase {
 //        SmartDashboard.putNumber("L Encoder Rate", m_leftEncoder.getRate());
 //        SmartDashboard.putNumber("R Encoder Rate", m_rightEncoder.getRate());
 
-        SmartDashboard.putBoolean("High Gear", getDriveShifterStatus());
+//        SmartDashboard.putBoolean("High Gear", getDriveShifterStatus());
         SmartDashboard.putBoolean("CTRE Feed Enabled", Unmanaged.getEnableState());
 
 //        if(m_leftEncoder.getRate() > maxVel) {
@@ -575,7 +576,7 @@ public class DriveTrain extends SubsystemBase {
     }
 
     int distanceMetersToFalconFxUnits(double meters) {
-        double gearRatio = getDriveShifterStatus() ? gearRatioHigh : gearRatioLow;
+//        double gearRatio = getDriveShifterStatus() ? gearRatioHigh : gearRatioLow;
 
         return (int) (meters * 2048.0 / (10 * gearRatio * Math.PI));
     }
