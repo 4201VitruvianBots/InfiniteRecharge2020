@@ -29,7 +29,7 @@ import java.util.List;
 
 public class AllyTrenchPathStraight extends SequentialCommandGroup {
     public AllyTrenchPathStraight(DriveTrain driveTrain, Intake intake, Indexer indexer, Turret turret, Shooter shooter, Vision vision) {
-        TrajectoryConfig configA = new TrajectoryConfig(Units.feetToMeters(5.75), Units.feetToMeters(10));
+        TrajectoryConfig configA = new TrajectoryConfig(Units.feetToMeters(5.75), Units.feetToMeters(6));
         configA.setReversed(true);
         configA.setEndVelocity(0);
         configA.addConstraint(new DifferentialDriveKinematicsConstraint(driveTrain.getDriveTrainKinematics(), configA.getMaxVelocity()));
@@ -38,17 +38,17 @@ public class AllyTrenchPathStraight extends SequentialCommandGroup {
         //var startToTrenchPath = TrajectoryUtils.readCsvTrajectory("init1Ally2");
         ArrayList<Pose2d> startToTrenchPath = new ArrayList();
         startToTrenchPath.add(new Pose2d(0, 0, new Rotation2d(0)));
-        startToTrenchPath.add(new Pose2d(6, 6, new Rotation2d(0)));
+        startToTrenchPath.add(new Pose2d(-3.3, 0, new Rotation2d(0)));
         var startToTrenchCommand = TrajectoryUtils.generateRamseteCommand(driveTrain, startToTrenchPath, configA);
 
-        var configB = new TrajectoryConfig(Units.feetToMeters(6), Units.feetToMeters(10));
+        var configB = new TrajectoryConfig(Units.feetToMeters(6), Units.feetToMeters(6));
         configB.setReversed(false);
         configB.setEndVelocity(0);
         configB.addConstraint(new DifferentialDriveKinematicsConstraint(driveTrain.getDriveTrainKinematics(), configB.getMaxVelocity()));
         configB.addConstraint(new DifferentialDriveVoltageConstraint(driveTrain.getFeedforward(), driveTrain.getDriveTrainKinematics(),10));
         ArrayList<Pose2d> trenchToShootPath = new ArrayList();
         trenchToShootPath.add(new Pose2d(0, 0, new Rotation2d(0)));
-        trenchToShootPath.add(new Pose2d(6, 6, new Rotation2d(0)));
+        trenchToShootPath.add(new Pose2d(3.3, 0, new Rotation2d(0)));
 
         var trenchToShootCommand = TrajectoryUtils.generateRamseteCommand(driveTrain, trenchToShootPath, configB);
 
@@ -71,6 +71,7 @@ public class AllyTrenchPathStraight extends SequentialCommandGroup {
                 ),
                 new AutoControlledIntake(intake, indexer).withTimeout(0.25),
                 new SetIntakePiston(intake, false),
+                new ResetOdometry(driveTrain),
                 new ParallelDeadlineGroup(
                         trenchToShootCommand,
                         new SetTurretRobotRelativeAngle(turret, - 25).withTimeout(0.25),
@@ -87,4 +88,3 @@ public class AllyTrenchPathStraight extends SequentialCommandGroup {
         );
     }
 }
-

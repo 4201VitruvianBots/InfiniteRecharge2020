@@ -147,11 +147,11 @@ public class RobotContainer {
                         //        () -> variableTestPowers.getVariablePower(Timer.getFPGATimestamp() - startTimestamp))),
                         //entry(CommandSelector.SOTM_ARC_CONSTANT, new SOTMWhileMovingConstant(m_driveTrain, m_ShootOnTheMove, m_indexer, 0.21, 0.15)), // Replace these values w/ something smart
 
-                        entry(CommandSelector.SHOOT_AND_DRIVE_BACK, new ShootAndDriveBack(m_driveTrain, m_intake, m_indexer, m_turret, m_shooter, m_vision)),
-                        entry(CommandSelector.DRIVE_STRAIGHT, new DriveBackwards(m_driveTrain)),
-                        entry(CommandSelector.DO_NOTHING, new DoNothing()),
-                        entry(CommandSelector.SHOOT_AND_DRIVE_FORWARD, new ShootAndDriveForward(m_driveTrain, m_intake, m_indexer, m_turret, m_shooter, m_vision)),
-                        entry(CommandSelector.ALLIANCE_TRENCH_STRAIGHT, new AllyTrenchPathStraight(m_driveTrain, m_intake, m_indexer, m_turret, m_shooter, m_vision))
+                        // entry(CommandSelector.SHOOT_AND_DRIVE_BACK, new ShootAndDriveBack(m_driveTrain, m_intake, m_indexer, m_turret, m_shooter, m_vision)),
+                        // entry(CommandSelector.DRIVE_STRAIGHT, new DriveBackwards(m_driveTrain)),
+                        // entry(CommandSelector.DO_NOTHING, new DoNothing()),
+                        // entry(CommandSelector.SHOOT_AND_DRIVE_FORWARD, new ShootAndDriveForward(m_driveTrain, m_intake, m_indexer, m_turret, m_shooter, m_vision)),
+                        // entry(CommandSelector.ALLIANCE_TRENCH_STRAIGHT, new AllyTrenchPathStraight(m_driveTrain, m_intake, m_indexer, m_turret, m_shooter, m_vision))
 //                        entry(CommandSelector.TEST_PATH, new TestAuto(m_driveTrain, m_shooter, m_indexer, m_intake)),
 //                        entry(CommandSelector.FULL_PATH, new AllyTrenchPathStraight(m_driveTrain, m_intake, m_indexer, m_turret, m_shooter, m_vision))
 //                        entry(CommandSelector.ENEMY_PATH, new EnemyAutoPath(m_driveTrain, m_shooter, m_indexer, m_intake, m_turret)),
@@ -298,7 +298,8 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        switch (selectedSkillsChallenge) {
+        return new AllyTrenchPathStraight(m_driveTrain, m_intake, m_indexer, m_turret, m_shooter, m_vision);
+        /*switch (selectedSkillsChallenge) {
             case AUTO_NAV_BARREL:
                 return new AutoNavBarrel(m_driveTrain, m_FieldSim);
             case AUTO_NAV_BOUNCE:
@@ -327,7 +328,7 @@ public class RobotContainer {
             default:
                 System.out.println("Not a recognized skills command");
                 return null;
-        }
+        }*/
         
 //            return new SOTMSimulationAuto(m_driveTrain, m_intake, m_indexer, m_turret, m_shooter, m_vision, m_FieldSim, m_ShootOnTheMove);
             //return m_ShootOnTheMove;
