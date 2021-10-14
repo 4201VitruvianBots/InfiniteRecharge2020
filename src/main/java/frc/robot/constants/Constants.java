@@ -105,8 +105,8 @@ public final class Constants {
 
         // Example values only -- use what's on your physical robot!
         public static final DCMotor kDriveGearbox = DCMotor.getFalcon500(2);
-        public static final double kDriveGearingLow = 7.49;
-        public static final double kDriveGearingHigh = 14.14;
+        public static final double kDriveGearingLow = 5.0;
+        public static final double kDriveGearingHigh = 5.0;
 
 
         public static final int kMagEncoderCPR = 4096;

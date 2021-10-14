@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.drivetrain.ResetOdometry;
 import frc.robot.commands.drivetrain.SetDriveNeutralMode;
 import frc.robot.commands.drivetrain.SetDriveShifters;
+import frc.robot.commands.drivetrain.SetOdometry;
 import frc.robot.commands.intake.AutoControlledIntake;
 import frc.robot.commands.intake.SetIntakePiston;
 import frc.robot.commands.shooter.AutoRapidFireSetpoint;
@@ -29,7 +30,7 @@ import java.util.List;
 
 public class AllyTrenchPathStraight extends SequentialCommandGroup {
     public AllyTrenchPathStraight(DriveTrain driveTrain, Intake intake, Indexer indexer, Turret turret, Shooter shooter, Vision vision) {
-        TrajectoryConfig configA = new TrajectoryConfig(Units.feetToMeters(5.75), Units.feetToMeters(6));
+        TrajectoryConfig configA = new TrajectoryConfig(Units.feetToMeters(6), Units.feetToMeters(4));
         configA.setReversed(true);
         configA.setEndVelocity(0);
         configA.addConstraint(new DifferentialDriveKinematicsConstraint(driveTrain.getDriveTrainKinematics(), configA.getMaxVelocity()));
@@ -41,7 +42,7 @@ public class AllyTrenchPathStraight extends SequentialCommandGroup {
         startToTrenchPath.add(new Pose2d(-3.3, 0, new Rotation2d(0)));
         var startToTrenchCommand = TrajectoryUtils.generateRamseteCommand(driveTrain, startToTrenchPath, configA);
 
-        var configB = new TrajectoryConfig(Units.feetToMeters(6), Units.feetToMeters(6));
+        var configB = new TrajectoryConfig(Units.feetToMeters(6), Units.feetToMeters(4));
         configB.setReversed(false);
         configB.setEndVelocity(0);
         configB.addConstraint(new DifferentialDriveKinematicsConstraint(driveTrain.getDriveTrainKinematics(), configB.getMaxVelocity()));
@@ -53,7 +54,7 @@ public class AllyTrenchPathStraight extends SequentialCommandGroup {
         var trenchToShootCommand = TrajectoryUtils.generateRamseteCommand(driveTrain, trenchToShootPath, configB);
 
         addCommands(
-                new ResetOdometry(driveTrain),
+                new SetOdometry(driveTrain, new Pose2d()),
                 new SetDriveNeutralMode(driveTrain, 0),
                 new SetDriveShifters(driveTrain, false),
                 new SetAndHoldRpmSetpoint(shooter, vision, 3800),
@@ -71,7 +72,7 @@ public class AllyTrenchPathStraight extends SequentialCommandGroup {
                 ),
                 new AutoControlledIntake(intake, indexer).withTimeout(0.25),
                 new SetIntakePiston(intake, false),
-                new ResetOdometry(driveTrain),
+                new SetOdometry(driveTrain, new Pose2d()),
                 new ParallelDeadlineGroup(
                         trenchToShootCommand,
                         new SetTurretRobotRelativeAngle(turret, - 25).withTimeout(0.25),

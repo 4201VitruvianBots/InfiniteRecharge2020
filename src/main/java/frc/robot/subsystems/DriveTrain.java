@@ -229,7 +229,7 @@ public class DriveTrain extends SubsystemBase {
 //        double gearRatio = gearRatioHigh;
 
         if(RobotBase.isReal())
-            return (driveMotors[sensorIndex].getSelectedSensorPosition() / 2048.0) * gearRatio * Math.PI * Units.feetToMeters(wheelDiameter);
+            return (driveMotors[sensorIndex].getSelectedSensorPosition() / 4096.0) * gearRatio * Math.PI * Units.feetToMeters(wheelDiameter);
         else {
             return (simMotors[sensorIndex].getSelectedSensorPosition() / 4096.0) * Math.PI * Units.feetToMeters(wheelDiameter);
 //            if(sensorIndex == 0)
@@ -457,6 +457,8 @@ public class DriveTrain extends SubsystemBase {
         if (RobotBase.isReal()) {
             SmartDashboardTab.putNumber("DriveTrain", "Left Encoder", getEncoderCount(0));
             SmartDashboardTab.putNumber("DriveTrain", "Right Encoder", getEncoderCount(2));
+            SmartDashboardTab.putNumber("DriveTrain", "Left Distance", getWheelDistanceMeters(0));
+            SmartDashboardTab.putNumber("DriveTrain", "Right Distance", getWheelDistanceMeters(2));
             SmartDashboardTab.putNumber("DriveTrain", "xCoordinate",
                     Units.metersToFeet(getRobotPose().getTranslation().getX()));
             SmartDashboardTab.putNumber("DriveTrain", "yCoordinate",
