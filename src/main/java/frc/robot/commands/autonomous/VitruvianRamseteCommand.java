@@ -49,10 +49,11 @@ public class VitruvianRamseteCommand extends RamseteCommand {
         autoDuration = m_trajectory.getTotalTimeSeconds() + 1;
     }
 
-//    @Override
-//    public void execute() {
-//        super.execute();
-//    }
+    @Override
+    public void execute() {
+        super.execute();
+        SmartDashboardTab.putNumber("DriveTrain", "Velocity", Units.metersToFeet(m_driveTrain.getDriveTrainKinematics().toChassisSpeeds(m_driveTrain.getSpeeds()).vxMetersPerSecond));
+    }
 
 //    @Override
 //    public boolean isFinished() {

@@ -39,13 +39,17 @@ import java.util.List;
 
 public class GalacticSearchARed extends SequentialCommandGroup {
     public GalacticSearchARed(DriveTrain driveTrain, FieldSim fieldSim) {
-        Pose2d[] waypoints = {
-                new Pose2d(Units.inchesToMeters(30), Units.inchesToMeters(90), new Rotation2d(Units.degreesToRadians(180))),
-                new Pose2d(Units.inchesToMeters(90), Units.inchesToMeters(90), new Rotation2d(Units.degreesToRadians(180))),
-                new Pose2d(Units.inchesToMeters(150), Units.inchesToMeters(60), new Rotation2d(Units.degreesToRadians(135))),
-                new Pose2d(Units.inchesToMeters(180), Units.inchesToMeters(150), new Rotation2d(Units.degreesToRadians(-150))),
-                new Pose2d(Units.inchesToMeters(345), Units.inchesToMeters(90), new Rotation2d(Units.degreesToRadians(180)))
+        int[][] waypointsRaw = {
+                {30,90,180},
+                {90,90,180},
+                {150,60,135},
+                {180,150,-150},
+                {345,90,180}
         };
+        Pose2d[] waypoints = new Pose2d[waypointsRaw.length];
+        for (int j = 0; j < waypointsRaw.length; j++) {
+                waypoints[j] = new Pose2d(Units.inchesToMeters(waypointsRaw[j][0]), Units.inchesToMeters(waypointsRaw[j][1]), new Rotation2d(Units.degreesToRadians(waypointsRaw[j][2])));
+        }
         Pose2d startPosition = waypoints[0];
 
 

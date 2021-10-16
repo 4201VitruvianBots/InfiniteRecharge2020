@@ -28,17 +28,14 @@ import java.util.function.DoubleSupplier;
 public class AutoAvoidCones extends CommandBase {
     @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
     private final DriveTrain m_driveTrain;
-    private final DoubleSupplier m_leftOutput, m_rightOutput;
-    private double currentLeftOutput, currentRightOutput;
+    private final DoubleSupplier m_throttleOutput, m_turnOutput;
+    private double currentThrottleOutput, currentTurnOutput;
     private final Translation2d[] m_conePoses;
     private final BooleanSupplier m_override;
 
     private final double tolerance = Units.inchesToMeters(6);
     private final double robotLength = 0.838 + tolerance;
     private final double robotWidth = 0.673 + tolerance;
-
-    // Angle from center of robot to a corner
-    private final double criticalAngle = Math.atan2(robotWidth, robotLength);
 
     private final double coneRadius = Units.inchesToMeters(6);
     /* Robot Points:
@@ -49,10 +46,10 @@ public class AutoAvoidCones extends CommandBase {
          */
     Translation2d[] robotCornerPoses = new Translation2d[4];
 
-    public AutoAvoidCones(DriveTrain driveTrain, DoubleSupplier leftOutput, DoubleSupplier rightOutput, BooleanSupplier override, Translation2d[] conePoses) {
+    public AutoAvoidCones(DriveTrain driveTrain, DoubleSupplier throttleOutput, DoubleSupplier turnOutput, BooleanSupplier override, Translation2d[] conePoses) {
         m_driveTrain = driveTrain;
-        m_leftOutput = leftOutput;
-        m_rightOutput = rightOutput;
+        m_throttleOutput = throttleOutput;
+        m_turnOutput = turnOutput;
         m_conePoses = conePoses;
         m_override = override;
 
@@ -68,12 +65,12 @@ public class AutoAvoidCones extends CommandBase {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        currentLeftOutput = m_leftOutput.getAsDouble();
-        currentRightOutput = m_rightOutput.getAsDouble();
+        currentThrottleOutput = m_throttleOutput.getAsDouble();
+        currentTurnOutput = m_turnOutput.getAsDouble();
         if (aboutToHitCone() && !m_override.getAsBoolean()) {
             m_driveTrain.setMotorTankDrive(0, 0);
         } else {
-            m_driveTrain.setMotorTankDrive(currentLeftOutput, currentRightOutput);
+            m_driveTrain.setMotorArcadeDrive(currentThrottleOutput, currentTurnOutput);
         }
     }
 
@@ -91,39 +88,20 @@ public class AutoAvoidCones extends CommandBase {
             new Translation2d(-robotLength / 2.0, robotLength / 2.0)
         };
         for (int i = 0; i < 4; i++) {
-            Translation2d updatedPosition = robotCornerPoses[i].rotateBy(robotPose.getRotation()).plus(robotPose.getTranslation());
+            robotCornerPoses[i] = robotCornerPoses[i].rotateBy(robotPose.getRotation()).plus(robotPose.getTranslation());
         }
-        double deltaXa = robotLength / 2.0;
-        double deltaXb = - robotLength / 2.0;
-        double deltaYa = robotWidth / 2.0;
-        double deltaYb = - robotWidth / 2.0;
 
-        robotCornerPoses[0] = new Translation2d(cos * deltaXa - sin * deltaYa + robotX,
-                sin * deltaXa + cos * deltaYa + robotY);
-        robotCornerPoses[1] = new Translation2d(cos * deltaXa - sin * deltaYb + robotX,
-                sin * deltaXa + cos * deltaYb + robotY);
-        robotCornerPoses[2] = new Translation2d(cos * deltaXb - sin * deltaYb + robotX,
-                sin * deltaXb + cos * deltaYb + robotY);
-        robotCornerPoses[3] = new Translation2d(cos * deltaXb - sin * deltaYa + robotX,
-                sin * deltaXb + cos * deltaYa + robotY);
-        SmartDashboardTab.putNumber("DriveTrain", "Corner pose 0", Units.metersToFeet(robotCornerPoses[0].getX()));
         for (Translation2d cone : m_conePoses) { 
-            double angleToCone = Math.atan2(cone.getY() - robotPose.getY(), cone.getX() - robotPose.getX());
-            Translation2d adjustedConePose = new Translation2d(
-                cone.getX() - coneRadius * Math.cos(angleToCone),
-                cone.getY() - coneRadius * Math.sin(angleToCone));
+            Translation2d adjustedConePose = cone.minus(robotPose.getTranslation()).rotateBy(robotPose.getRotation().times(-1)).plus(robotPose.getTranslation());
 
-            double slope0to1 = (robotCornerPoses[1].getY() - robotCornerPoses[0].getY()) /(robotCornerPoses[1].getX() - robotCornerPoses[0].getX());
-
-            double slope1to2 = (robotCornerPoses[2].getY() - robotCornerPoses[1].getY()) /(robotCornerPoses[2].getX() - robotCornerPoses[1].getX());
-
-            if ((
-                    (adjustedConePose.getY() >= slope0to1 * (adjustedConePose.getX() - robotCornerPoses[0].getX()) + robotCornerPoses[0].getY()) ==
-                            (adjustedConePose.getY() <= slope0to1 * (adjustedConePose.getX() - robotCornerPoses[2].getX()) + robotCornerPoses[2].getY())
-            ) && (
-                    (adjustedConePose.getY() >= slope1to2 * (adjustedConePose.getX() - robotCornerPoses[0].getX()) + robotCornerPoses[0].getY()) ==
-                            (adjustedConePose.getY() <= slope1to2 * (adjustedConePose.getX() - robotCornerPoses[1].getX()) + robotCornerPoses[1].getY())
-            )) {
+            boolean coneToleft = adjustedConePose.getX() < robotPose.getX();
+            if (
+                coneToleft == currentThrottleOutput < 0 &&
+                (adjustedConePose.getX() + coneRadius > robotPose.getX() - robotLength / 2) && 
+                (adjustedConePose.getX() - coneRadius < robotPose.getX() + robotLength / 2) &&
+                adjustedConePose.getY() + coneRadius > robotPose.getY() - robotWidth / 2 && 
+                adjustedConePose.getY() - coneRadius < robotPose.getY() + robotWidth / 2
+                ) {
                     SmartDashboardTab.putBoolean("DriveTrain", "Will hit Cone", true);
                     return true;
                 }

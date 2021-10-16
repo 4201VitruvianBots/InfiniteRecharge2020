@@ -39,23 +39,27 @@ import java.util.List;
 
 public class AutoNavBounce extends SequentialCommandGroup {
     public AutoNavBounce(DriveTrain driveTrain, FieldSim fieldSim) {
-        Pose2d[] waypoints = {
-            new Pose2d(Units.inchesToMeters(30), Units.inchesToMeters(90), new Rotation2d(Units.degreesToRadians(0))),
-            new Pose2d(Units.inchesToMeters(90), Units.inchesToMeters(150), new Rotation2d(Units.degreesToRadians(90))),
-            new Pose2d(Units.inchesToMeters(105), Units.inchesToMeters(90), new Rotation2d(Units.degreesToRadians(120))),
-            new Pose2d(Units.inchesToMeters(150), Units.inchesToMeters(40), new Rotation2d(Units.degreesToRadians(180))),
-            new Pose2d(Units.inchesToMeters(180), Units.inchesToMeters(139), new Rotation2d(Units.degreesToRadians(-90))),
-            new Pose2d(Units.inchesToMeters(211), Units.inchesToMeters(30), new Rotation2d(Units.degreesToRadians(0))),
-            new Pose2d(Units.inchesToMeters(252), Units.inchesToMeters(30), new Rotation2d(Units.degreesToRadians(0))),
-            new Pose2d(Units.inchesToMeters(270), Units.inchesToMeters(147), new Rotation2d(Units.degreesToRadians(90))),       
-            new Pose2d(Units.inchesToMeters(315), Units.inchesToMeters(100), new Rotation2d(Units.degreesToRadians(160))),
+        int[][] waypointsRaw = {
+                {30,90,0},
+                {80,146,90},
+                {115,85,100},
+                {150, 37,180},
+                {180,140,-90},
+                {180, 80, -90},
+                {260,30,30},
+                {270,140,90},
+                {310,90,135}
         };
-
+        Pose2d[] waypoints = new Pose2d[waypointsRaw.length];
+        for (int j = 0; j < waypointsRaw.length; j++) {
+                waypoints[j] = new Pose2d(Units.inchesToMeters(waypointsRaw[j][0]), Units.inchesToMeters(waypointsRaw[j][1]), new Rotation2d(Units.degreesToRadians(waypointsRaw[j][2])));
+        }
+        
         boolean[] pathIsReversed = {false, true, true, true, false, false, false, true};
         Pose2d startPosition = waypoints[0];
 
 
-        TrajectoryConfig configA = new TrajectoryConfig(Units.feetToMeters(10), Units.feetToMeters(10));
+        TrajectoryConfig configA = new TrajectoryConfig(Units.feetToMeters(10), Units.feetToMeters(5));
         configA.setReversed(false);
         //configA.setEndVelocity(configA.getMaxVelocity());
         configA.addConstraint(new DifferentialDriveKinematicsConstraint(driveTrain.getDriveTrainKinematics(), configA.getMaxVelocity()));
@@ -66,10 +70,10 @@ public class AutoNavBounce extends SequentialCommandGroup {
                 new SetOdometry(driveTrain, fieldSim, startPosition),
                 new SetDriveNeutralMode(driveTrain, 0));
 
-        double[] startVelocities = {configA.getMaxVelocity(), 0, configA.getMaxVelocity(), configA.getMaxVelocity(), 0, 
-                configA.getMaxVelocity(), configA.getMaxVelocity(), 0, 0};
-        double[] endVelocities = {0, configA.getMaxVelocity(), configA.getMaxVelocity(), 0, configA.getMaxVelocity(), 
-                configA.getMaxVelocity(), 0, 0};
+        double[] startVelocities = {0, 0, configA.getMaxVelocity()/3, configA.getMaxVelocity()/3, 0,
+                configA.getMaxVelocity()/3, configA.getMaxVelocity()/3, configA.getMaxVelocity()/3, 0};
+        double[] endVelocities = {0, configA.getMaxVelocity()/3, configA.getMaxVelocity()/3, 0, configA.getMaxVelocity()/3,
+                configA.getMaxVelocity()/3, 0, 0};
 
         for(int i = 0; i < waypoints.length - 1; i++) {
                 configA.setStartVelocity(startVelocities[i]);

@@ -31,11 +31,11 @@ public class Shooter extends SubsystemBase {
      *
      * @return
      */
-    // PID loop contants
+    // PID loop constants
     private final double kF = 0.0523;  // 0.054      //  Gree: 0.0475;
-    private final double kP = 0.6;      //  0.4       //  0.00047
-    private final double kI = 0.0;                    //  0.0000287
-    private final double kD = 0.0;
+    private final double kP = 0.25;      //  0.4       //  0.00047
+    private final double kI = 0.00008;                    //  0.0000287
+    private final double kD = 7;
 
 //    private double kF = 0.0523;  // 0.054      //  Gree: 0.0475;
 //    private double kP = 0.6;      //  0.4       //  0.00047
@@ -55,7 +55,7 @@ public class Shooter extends SubsystemBase {
     };
     private final PowerDistributionPanel m_pdp;
     private final Vision m_vision;
-    public int kI_Zone = 100;
+    public int kI_Zone = 400;
     public int kAllowableError = 50;
     public double rpmOutput;
     public double rpmTolerance = 50.0;
@@ -163,10 +163,18 @@ public class Shooter extends SubsystemBase {
         return (RPM / 600.0) * 2048.0;
     }
 
-    private void calculateIdealRPM() {
-        double targetDistance = Units.feetToMeters(m_vision.getTargetDistance());
-        double shootSpeed = targetDistance * Math.sqrt(0.5 * Constants.g / (targetDistance * Math.tan(Constants.verticalShooterAngle) - Constants.verticalTargetDistance)) / Math.cos(Constants.verticalShooterAngle);
+    /*
+    * Calculates RPM to hit target at a specific distance from the target, based on physics
+    * @param distance Distance from target (in meters)
+    */
+    private void calculateIdealRPM(double distance) {
+        double shootSpeed = distance * Math.sqrt(0.5 * Constants.g / (distance * Math.tan(Constants.verticalShooterAngle) - Constants.verticalTargetDistance)) / Math.cos(Constants.verticalShooterAngle);
         idealRPM = shootSpeed * metersPerSecondToRPM;
+    }
+
+    public double getIdealRPM(double distance) {
+        return (distance * Math.sqrt(0.5 * Constants.g / (distance * Math.tan(Constants.verticalShooterAngle) - Constants.verticalTargetDistance)) / Math.cos(Constants.verticalShooterAngle))
+        * metersPerSecondToRPM;
     }
 
     public void setIdealRPM() {
@@ -223,7 +231,7 @@ public class Shooter extends SubsystemBase {
 //        updatePidRPM();
         updateShuffleboard();
         updatePIDValues();
-        calculateIdealRPM();
+        //calculateIdealRPM();
 
         if((Math.abs(getSetpoint() - getRPM(0)) < getRPMTolerance()) && m_vision.hasTarget() &&
                 (Math.abs(m_vision.getTargetX()) < 1) && ! timerStart) {

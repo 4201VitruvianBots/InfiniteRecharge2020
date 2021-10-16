@@ -41,7 +41,9 @@ import frc.robot.commands.intake.SetIntakePiston;
 import frc.robot.commands.intake.ToggleIntakePistons;
 import frc.robot.commands.shooter.RapidFireSetpoint;
 import frc.robot.commands.shooter.SetRpmSetpoint;
+import frc.robot.commands.shooter.TestAutomatedShooting;
 import frc.robot.commands.skyhook.SetSkyhookOutput;
+import frc.robot.commands.turret.AutoUseVisionCorrection;
 import frc.robot.commands.turret.SetTurretSetpointFieldAbsolute;
 import frc.robot.commands.turret.ShootOnTheMove;
 import frc.robot.commands.turret.ToggleTurretControlMode;
@@ -110,12 +112,13 @@ public class RobotContainer {
         AUTO_NAV_BARREL,
         AUTO_NAV_BOUNCE,
         LIGHSTPEED_CIRCUIT,
+        GALACTIC_SEARCH,
         GALACTIC_SEARCH_A,
         GALACTIC_SEARCH_B,
         None
     }
 
-    private SkillsChallengeSelector selectedSkillsChallenge = SkillsChallengeSelector.AUTO_NAV_BOUNCE; // Change this
+    private SkillsChallengeSelector selectedSkillsChallenge = SkillsChallengeSelector.GALACTIC_SEARCH; // Change this
 
     private FieldSim m_FieldSim;
 
@@ -144,11 +147,11 @@ public class RobotContainer {
                         //        () -> variableTestPowers.getVariablePower(Timer.getFPGATimestamp() - startTimestamp))),
                         //entry(CommandSelector.SOTM_ARC_CONSTANT, new SOTMWhileMovingConstant(m_driveTrain, m_ShootOnTheMove, m_indexer, 0.21, 0.15)), // Replace these values w/ something smart
 
-                        entry(CommandSelector.SHOOT_AND_DRIVE_BACK, new ShootAndDriveBack(m_driveTrain, m_intake, m_indexer, m_turret, m_shooter, m_vision)),
-                        entry(CommandSelector.DRIVE_STRAIGHT, new DriveBackwards(m_driveTrain)),
-                        entry(CommandSelector.DO_NOTHING, new DoNothing()),
-                        entry(CommandSelector.SHOOT_AND_DRIVE_FORWARD, new ShootAndDriveForward(m_driveTrain, m_intake, m_indexer, m_turret, m_shooter, m_vision)),
-                        entry(CommandSelector.ALLIANCE_TRENCH_STRAIGHT, new AllyTrenchPathStraight(m_driveTrain, m_intake, m_indexer, m_turret, m_shooter, m_vision))
+                        // entry(CommandSelector.SHOOT_AND_DRIVE_BACK, new ShootAndDriveBack(m_driveTrain, m_intake, m_indexer, m_turret, m_shooter, m_vision)),
+                        // entry(CommandSelector.DRIVE_STRAIGHT, new DriveBackwards(m_driveTrain)),
+                        // entry(CommandSelector.DO_NOTHING, new DoNothing()),
+                        // entry(CommandSelector.SHOOT_AND_DRIVE_FORWARD, new ShootAndDriveForward(m_driveTrain, m_intake, m_indexer, m_turret, m_shooter, m_vision)),
+                        // entry(CommandSelector.ALLIANCE_TRENCH_STRAIGHT, new AllyTrenchPathStraight(m_driveTrain, m_intake, m_indexer, m_turret, m_shooter, m_vision))
 //                        entry(CommandSelector.TEST_PATH, new TestAuto(m_driveTrain, m_shooter, m_indexer, m_intake)),
 //                        entry(CommandSelector.FULL_PATH, new AllyTrenchPathStraight(m_driveTrain, m_intake, m_indexer, m_turret, m_shooter, m_vision))
 //                        entry(CommandSelector.ENEMY_PATH, new EnemyAutoPath(m_driveTrain, m_shooter, m_indexer, m_intake, m_turret)),
@@ -182,9 +185,10 @@ public class RobotContainer {
         m_FieldSim = new FieldSim(m_driveTrain, m_turret, m_shooter);
 
         if(RobotBase.isReal()) {
-            m_driveTrain.setDefaultCommand(new SetArcadeDrive(m_driveTrain, m_intake,
-                    () -> leftJoystick.getRawAxis(1),
-                    () -> rightJoystick.getRawAxis(0)));
+            m_driveTrain.setDefaultCommand(new SequentialCommandGroup(new SetDriveShifters(m_driveTrain, Constants.DriveConstants.inSlowGear), 
+            new SetArcadeDrive(m_driveTrain, m_intake,
+                    () -> -leftJoystick.getRawAxis(1),
+                    () -> rightJoystick.getRawAxis(0))));
 
             m_led.setDefaultCommand(new GetSubsystemStates(this, m_led, m_indexer, m_intake, m_vision, m_turret, m_climber, m_colorSensor, m_controls));
         }
@@ -253,10 +257,12 @@ public class RobotContainer {
         xBoxButtons[4].whenPressed(new ToggleIntakePistons(m_intake));
         xBoxLeftTrigger.whileHeld(new ControlledIntake(m_intake, m_indexer, xBoxController)); // Deploy intake
 
-        xBoxButtons[1].whileHeld(new SetRpmSetpoint(m_shooter, m_vision, 3575));                          // B - Set RPM Medium
-        xBoxButtons[2].whileHeld(new EjectAll(m_indexer, m_intake));                                  // X - Eject All
-        xBoxButtons[3].whileHeld(new SetRpmSetpoint(m_shooter, m_vision, 3900));                          // Y - Set RPM Far
-        xBoxButtons[0].whileHeld(new SetRpmSetpoint(m_shooter, m_vision, 3800));                          // A - Set RPM Close
+        xBoxButtons[2].whileHeld(new SetRpmSetpoint(m_shooter, m_vision, 1000));//green                  // X - Set RPM Medium
+        xBoxButtons[1].whileHeld(new SetRpmSetpoint(m_shooter, m_vision, 3410));//blue                  // B - Set RPM Medium
+        xBoxPOVButtons[0].whileHeld(new EjectAll(m_indexer, m_intake));                                  //Top POV - Eject All
+        xBoxButtons[3].whileHeld(new SetRpmSetpoint(m_shooter, m_vision, 3900));//yellow                     // Y - Set RPM Far
+        //xBoxButtons[0].whileHeld(new SetRpmSetpoint(m_shooter, m_vision, 3500));//red                 // A - Set RPM Close
+        xBoxButtons[0].whileHeld(new TestAutomatedShooting(m_driveTrain, m_shooter, m_turret, m_vision));
 
         //xBoxButtons[5].whileHeld(new RapidFire(m_shooter, m_indexer, m_intake, 3700));              // Set Distance RPM
         xBoxRightTrigger.whileHeld(new RapidFireSetpoint(m_shooter, m_indexer, m_intake));            // flywheel on toggle
@@ -292,7 +298,8 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        switch (selectedSkillsChallenge) {
+        return new AllyTrenchPathStraight(m_driveTrain, m_intake, m_indexer, m_turret, m_shooter, m_vision);
+        /*switch (selectedSkillsChallenge) {
             case AUTO_NAV_BARREL:
                 return new AutoNavBarrel(m_driveTrain, m_FieldSim);
             case AUTO_NAV_BOUNCE:
@@ -301,21 +308,27 @@ public class RobotContainer {
                 return new AutoNavSlalom(m_driveTrain, m_FieldSim);
             case LIGHSTPEED_CIRCUIT:
                 return new LightspeedCircuit(m_driveTrain, m_FieldSim);
+            case GALACTIC_SEARCH:
+                return new SequentialCommandGroup(
+                    //new SetIntakePiston(m_intake, true), 
+                    new GalacticSearch(m_driveTrain, m_FieldSim).deadlineWith(new AutoControlledIntake(m_intake, m_indexer)),
+                    new SetIntakePiston(m_intake, false));
             case GALACTIC_SEARCH_A:
                 return new SequentialCommandGroup(
-                    new SetIntakePiston(m_intake, true), 
-                    (new ConditionalCommand(new GalacticSearchARed(m_driveTrain, m_FieldSim), new GalacticSearchABlue(m_driveTrain, m_FieldSim), () -> true)).deadlineWith(new AutoControlledIntake(m_intake, m_indexer)),
+                    //new SetIntakePiston(m_intake, true), 
+                    new GalacticSearchA(m_driveTrain, m_FieldSim).deadlineWith(new AutoControlledIntake(m_intake, m_indexer)),
+                    //(new ConditionalCommand(new GalacticSearchARed(m_driveTrain, m_FieldSim), new GalacticSearchABlue(m_driveTrain, m_FieldSim), () -> true)).deadlineWith(new AutoControlledIntake(m_intake, m_indexer)),
                     new SetIntakePiston(m_intake, false));
             case GALACTIC_SEARCH_B:
                 return new SequentialCommandGroup(
-                    new SetIntakePiston(m_intake, true), 
+                    // new SetIntakePiston(m_intake, true), 
                     new GalacticSearchB(m_driveTrain, m_FieldSim).deadlineWith(new AutoControlledIntake(m_intake, m_indexer)),
                     new SetIntakePiston(m_intake, false));
             case None:
             default:
                 System.out.println("Not a recognized skills command");
                 return null;
-        }
+        }*/
         
 //            return new SOTMSimulationAuto(m_driveTrain, m_intake, m_indexer, m_turret, m_shooter, m_vision, m_FieldSim, m_ShootOnTheMove);
             //return m_ShootOnTheMove;
@@ -339,7 +352,7 @@ public class RobotContainer {
         if(RobotBase.isReal()) {
             m_driveTrain.resetEncoderCounts();
             m_driveTrain.resetOdometry(m_FieldSim.getRobotPose(), m_FieldSim.getRobotPose().getRotation());
-            m_driveTrain.setDriveTrainNeutralMode(2); // All in coast; change this maybe
+            m_driveTrain.setDriveTrainNeutralMode(0); // Half and half
         } else {
             m_driveTrain.resetEncoderCounts();
             m_driveTrain.resetOdometry(m_FieldSim.getRobotPose(), m_FieldSim.getRobotPose().getRotation());

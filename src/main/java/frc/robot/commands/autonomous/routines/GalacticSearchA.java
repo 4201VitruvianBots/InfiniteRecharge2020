@@ -40,14 +40,15 @@ import java.util.List;
 public class GalacticSearchA extends SequentialCommandGroup {
     public GalacticSearchA(DriveTrain driveTrain, FieldSim fieldSim) {
         int[][] waypointsRaw = {
-                {30,90,180},
+                {46,90,180},
                 {90,90,180},
-                {150,60,135},
-                {180,30,-165},
-                {180,150,-130},
-                {210,120,150},
-                {270,90,180},
-                {345,90,180}
+                {150,60,120},
+                {180,34,180},
+                {180, 90, -30},
+                {180,150,180},
+                {215,120,135},
+                {270,90,165},
+                {375,83,180}
         };
         Pose2d[] waypoints = new Pose2d[waypointsRaw.length];
         for (int j = 0; j < waypointsRaw.length; j++) {
@@ -56,25 +57,39 @@ public class GalacticSearchA extends SequentialCommandGroup {
         Pose2d startPosition = waypoints[0];
 
 
-        TrajectoryConfig configA = new TrajectoryConfig(Units.feetToMeters(10), Units.feetToMeters(10));
+        TrajectoryConfig configA = new TrajectoryConfig(Units.feetToMeters(10), Units.feetToMeters(4));
         configA.setReversed(true);
         //configA.setEndVelocity(configA.getMaxVelocity());
         configA.addConstraint(new DifferentialDriveKinematicsConstraint(driveTrain.getDriveTrainKinematics(), configA.getMaxVelocity()));
         configA.addConstraint(new DifferentialDriveVoltageConstraint(driveTrain.getFeedforward(), driveTrain.getDriveTrainKinematics(),10));
-        configA.addConstraint(new CentripetalAccelerationConstraint(1.5));
+        configA.addConstraint(new CentripetalAccelerationConstraint(1.7));
 
         addCommands(new SetDriveShifters(driveTrain, Constants.DriveConstants.inSlowGear),
                 new SetOdometry(driveTrain, fieldSim, startPosition),
                 new SetDriveNeutralMode(driveTrain, 0));
 
+        double[] startVelocities = {
+                        0,
+                        configA.getMaxVelocity()/3,
+                        configA.getMaxVelocity()/3,
+                        configA.getMaxVelocity()/3,
+                        configA.getMaxVelocity()/3,
+                        configA.getMaxVelocity()/3,
+                        configA.getMaxVelocity()/3,
+                        configA.getMaxVelocity()/2};
+        double[] endVelocities = {
+                        configA.getMaxVelocity()/3,
+                        configA.getMaxVelocity()/3,
+                        configA.getMaxVelocity()/3,
+                        configA.getMaxVelocity()/3,
+                        configA.getMaxVelocity()/3,
+                        configA.getMaxVelocity()/3,
+                        configA.getMaxVelocity()/2,
+                        configA.getMaxVelocity()/2};
+
         for(int i = 0; i < waypoints.length - 1; i++) {
-                if (i != 0) {
-                        configA.setEndVelocity(configA.getMaxVelocity());
-                        configA.setStartVelocity(configA.getMaxVelocity());
-                }
-                if (i == waypoints.length - 2) {
-                        configA.setEndVelocity(0);
-                }
+                configA.setStartVelocity(startVelocities[i]);
+                configA.setEndVelocity(endVelocities[i]);
                 Trajectory trajectory = TrajectoryGenerator.generateTrajectory(waypoints[i],
                 List.of(),
                 waypoints[i + 1],

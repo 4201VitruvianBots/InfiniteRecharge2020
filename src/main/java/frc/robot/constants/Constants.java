@@ -77,7 +77,7 @@ public final class Constants {
 
     // Use actual values for these
     public static final double verticalTargetDistance = Units.inchesToMeters(98.25 - 38); // Distance between shooter and target heights from ground
-    public static final double verticalShooterAngle = Math.PI / 3; // Angle ball is shot from shooter relative to the ground 
+    public static final double verticalShooterAngle = 1.02; // Angle ball is shot from shooter relative to the ground 
     public static final double tanSquaredVerticalShooterAngle = Math.pow(Math.tan(verticalShooterAngle), 2);
     public static final double sinOfVerticalShootAngle = Math.sin(verticalShooterAngle);
     public static final double cosOfVerticalShootAngle = Math.cos(verticalShooterAngle);
@@ -105,8 +105,8 @@ public final class Constants {
 
         // Example values only -- use what's on your physical robot!
         public static final DCMotor kDriveGearbox = DCMotor.getFalcon500(2);
-        public static final double kDriveGearingLow = 7.49;
-        public static final double kDriveGearingHigh = 14.14;
+        public static final double kDriveGearingLow = 5.0;
+        public static final double kDriveGearingHigh = 5.0;
 
 
         public static final int kMagEncoderCPR = 4096;
@@ -131,9 +131,9 @@ public final class Constants {
         // for *your* robot's drive.
         // The Robot Characterization Toolsuite provides a convenient tool for obtaining these
         // values for your robot.
-        public static final double ksVolts = 0.675;//inSlowGear ? 0.683 : 0.81;
-        public static final double kvVoltSecondsPerMeter = 3.21;//inSlowGear ? 3.19 : 1.74;
-        public static final double kaVoltSecondsSquaredPerMeter = 0.256;//inSlowGear ? 0.227 : 0.301;
+        public static final double ksVolts = 0.684;//3/21/21//inSlowGear ? 0.683 : 0.81;
+        public static final double kvVoltSecondsPerMeter = 1.52;//3/21/21//3.21inSlowGear ? 3.19 : 1.74;
+        public static final double kaVoltSecondsSquaredPerMeter = 0.142;//3/21/21//inSlowGear ? 0.227 : 0.301;
 
         // These are example values only - DO NOT USE THESE FOR YOUR OWN ROBOT!
         // These characterization values MUST be determined either experimentally or theoretically

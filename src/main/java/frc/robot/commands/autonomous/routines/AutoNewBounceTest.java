@@ -44,17 +44,18 @@ import java.util.List;
  * in order to adjust for robot's actual vs. expected position disparities
  */
 public class AutoNewBounceTest extends CommandBase {
-        private Pose2d currentPose;
-        private Pose2d[] endPoints = {
-            new Pose2d(Units.inchesToMeters(90), Units.inchesToMeters(145), new Rotation2d(Units.degreesToRadians(90))),
-            new Pose2d(Units.inchesToMeters(105), Units.inchesToMeters(90), new Rotation2d(Units.degreesToRadians(120))),
-            new Pose2d(Units.inchesToMeters(150), Units.inchesToMeters(40), new Rotation2d(Units.degreesToRadians(180))),
-            new Pose2d(Units.inchesToMeters(180), Units.inchesToMeters(139), new Rotation2d(Units.degreesToRadians(-90))),
-            new Pose2d(Units.inchesToMeters(211), Units.inchesToMeters(42), new Rotation2d(Units.degreesToRadians(0))),
-            new Pose2d(Units.inchesToMeters(252), Units.inchesToMeters(42), new Rotation2d(Units.degreesToRadians(0))),
-            new Pose2d(Units.inchesToMeters(270), Units.inchesToMeters(147), new Rotation2d(Units.degreesToRadians(90))),
-            new Pose2d(Units.inchesToMeters(315), Units.inchesToMeters(100), new Rotation2d(Units.degreesToRadians(160))),
+    private Pose2d currentPose;
+    int[][] endPointsRaw = {
+        {90,145,90},
+        {105,90,120},
+        {150,40,180},
+        {180,139,-90},
+        {211,42,0},
+        {252,42,0},
+        {270,147,90},
+        {315,100,160}
     };
+    Pose2d[] endPoints = new Pose2d[endPointsRaw.length];
 
     private int index = 0;
     private DriveTrain m_driveTrain;
@@ -75,6 +76,10 @@ public class AutoNewBounceTest extends CommandBase {
     public AutoNewBounceTest(DriveTrain driveTrain, FieldSim fieldSim) {
         m_driveTrain = driveTrain;
         m_fieldSim = fieldSim;
+        
+        for (int j = 0; j < endPointsRaw.length; j++) {
+            endPoints[j] = new Pose2d(Units.inchesToMeters(endPointsRaw[j][0]), Units.inchesToMeters(endPointsRaw[j][1]), new Rotation2d(Units.degreesToRadians(endPointsRaw[j][2])));
+        }
 
         configA.setReversed(false);
         //configA.setEndVelocity(configA.getMaxVelocity());

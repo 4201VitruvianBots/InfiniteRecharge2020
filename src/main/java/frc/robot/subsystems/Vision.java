@@ -32,7 +32,7 @@ Subsystem for interacting with the Limelight and OpenSight vision systems
 public class Vision extends SubsystemBase {
     // Variables for calculating distance
     private final double TARGET_HEIGHT = 98.25; // Outer port height above carpet in inches
-    private final double LIMELIGHT_MOUNT_ANGLE = 32; // Angle that the Limelight is mounted at
+    private final double LIMELIGHT_MOUNT_ANGLE = 18.48; // Angle that the Limelight is mounted at
     private final double LIMELIGHT_HEIGHT = 37.31; // Limelight height above the ground in inches
 
     private final double MIN_TARGET_DISTANCE = 1;
@@ -281,12 +281,12 @@ public class Vision extends SubsystemBase {
 
     }
 
-	// set smartdashboard
-	public void updateSmartDashboard() {
-		SmartDashboard.putBoolean("Limelight Has Target", hasTarget());
-		SmartDashboard.putNumber("Limelight Target X", getTargetX());
-		SmartDashboard.putNumber("Limelight Target Distance", getTargetDistance());
-		SmartDashboard.putNumber("Limelight Pipeline", getPipeline());
+    public void updateSmartDashboard() {
+        SmartDashboard.putBoolean("Limelight Has Target", hasTarget());
+        SmartDashboard.putNumber("Limelight Target X", getTargetX());
+        SmartDashboard.putNumber("Limelight Target Y", getTargetY());
+        SmartDashboard.putNumber("Limelight Target Distance", getTargetDistance());
+        SmartDashboard.putNumber("Limelight Pipeline", getPipeline());
 
         SmartDashboardTab.putBoolean("Turret", "Vision Valid Output", getValidTarget());
         SmartDashboardTab.putNumber("Turret", "Vision Target X", getFilteredTargetX());

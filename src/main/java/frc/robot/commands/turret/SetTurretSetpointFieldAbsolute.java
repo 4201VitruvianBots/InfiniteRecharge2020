@@ -146,8 +146,8 @@ public class SetTurretSetpointFieldAbsolute extends CommandBase {
                 }
 
                 if(m_shooter.canShoot()) {
-                    m_controller.setRumble(GenericHID.RumbleType.kLeftRumble, 0.8);
-                    m_controller.setRumble(GenericHID.RumbleType.kRightRumble, 0.8);
+                    m_controller.setRumble(GenericHID.RumbleType.kLeftRumble, 0.4);
+                    m_controller.setRumble(GenericHID.RumbleType.kRightRumble, 0.4);
                 } else {
                     m_controller.setRumble(GenericHID.RumbleType.kLeftRumble, 0);
                     m_controller.setRumble(GenericHID.RumbleType.kRightRumble, 0);

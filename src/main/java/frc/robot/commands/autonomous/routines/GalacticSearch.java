@@ -37,17 +37,21 @@ import frc.vitruvianlib.utils.TrajectoryUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GalacticSearchB extends SequentialCommandGroup {
-    public GalacticSearchB(DriveTrain driveTrain, FieldSim fieldSim) {
+public class GalacticSearch extends SequentialCommandGroup {
+    public GalacticSearch(DriveTrain driveTrain, FieldSim fieldSim) {
         int[][] waypointsRaw = {
-                {46,120,180},
+                {46,90,180},
                 {90,120,180},
-                {145,55,150},
-                {175,65,-120},
-                {216,117,-150},
-                {240,120,130},
-                {300,62,180},
-                {375,62,180}
+                {90,90,0},
+                {150,60,135},
+                {180,26,180},
+                {180,60,-30},
+                {180,150,180},
+                {210,120,160},
+                {240,110,150},
+                {270,84,130},
+                {300,52,180},
+                {375,52,180}
         };
         Pose2d[] waypoints = new Pose2d[waypointsRaw.length];
         for (int j = 0; j < waypointsRaw.length; j++) {
@@ -55,12 +59,13 @@ public class GalacticSearchB extends SequentialCommandGroup {
         }
         Pose2d startPosition = waypoints[0];
 
-        TrajectoryConfig configA = new TrajectoryConfig(Units.feetToMeters(10), Units.feetToMeters(5));
+
+        TrajectoryConfig configA = new TrajectoryConfig(Units.feetToMeters(10), Units.feetToMeters(4));
         configA.setReversed(true);
         //configA.setEndVelocity(configA.getMaxVelocity());
         configA.addConstraint(new DifferentialDriveKinematicsConstraint(driveTrain.getDriveTrainKinematics(), configA.getMaxVelocity()));
         configA.addConstraint(new DifferentialDriveVoltageConstraint(driveTrain.getFeedforward(), driveTrain.getDriveTrainKinematics(),10));
-        configA.addConstraint(new CentripetalAccelerationConstraint(1.3));
+        configA.addConstraint(new CentripetalAccelerationConstraint(1.7));
 
         addCommands(new SetDriveShifters(driveTrain, Constants.DriveConstants.inSlowGear),
                 new SetOdometry(driveTrain, fieldSim, startPosition),
@@ -73,17 +78,23 @@ public class GalacticSearchB extends SequentialCommandGroup {
                         configA.getMaxVelocity()/3,
                         configA.getMaxVelocity()/3,
                         configA.getMaxVelocity()/3,
-                        configA.getMaxVelocity()/4
-                };
+                        configA.getMaxVelocity()/3,
+                        configA.getMaxVelocity()/3,
+                        configA.getMaxVelocity()/3,
+                        configA.getMaxVelocity()/3,
+                        configA.getMaxVelocity()/3};
         double[] endVelocities = {
                         configA.getMaxVelocity()/3,
                         configA.getMaxVelocity()/3,
                         configA.getMaxVelocity()/3,
                         configA.getMaxVelocity()/3,
                         configA.getMaxVelocity()/3,
-                        configA.getMaxVelocity()/4,
-                        configA.getMaxVelocity()/2
-                };
+                        configA.getMaxVelocity()/3,
+                        configA.getMaxVelocity()/3,
+                        configA.getMaxVelocity()/3,
+                        configA.getMaxVelocity()/3,
+                        configA.getMaxVelocity()/3,
+                        configA.getMaxVelocity()/2};
 
         for(int i = 0; i < waypoints.length - 1; i++) {
                 configA.setStartVelocity(startVelocities[i]);

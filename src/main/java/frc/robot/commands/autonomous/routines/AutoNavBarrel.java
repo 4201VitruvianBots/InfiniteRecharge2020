@@ -40,42 +40,70 @@ import java.util.List;
 
 public class AutoNavBarrel extends SequentialCommandGroup {
     public AutoNavBarrel(DriveTrain driveTrain, FieldSim fieldSim) {
-        Pose2d[] waypoints = {
-                new Pose2d(Units.inchesToMeters(40), Units.inchesToMeters(90), new Rotation2d(Units.degreesToRadians(0))),
-                new Pose2d(Units.inchesToMeters(150), Units.inchesToMeters(90), new Rotation2d(Units.degreesToRadians(0))),
-                new Pose2d(Units.inchesToMeters(176), Units.inchesToMeters(45), new Rotation2d(Units.degreesToRadians(-120))),
-                new Pose2d(Units.inchesToMeters(124), Units.inchesToMeters(45), new Rotation2d(Units.degreesToRadians(120))),
-                new Pose2d(Units.inchesToMeters(150), Units.inchesToMeters(90), new Rotation2d(Units.degreesToRadians(0))),
-                new Pose2d(Units.inchesToMeters(240), Units.inchesToMeters(90), new Rotation2d(Units.degreesToRadians(0))),
-                new Pose2d(Units.inchesToMeters(270), Units.inchesToMeters(120), new Rotation2d(Units.degreesToRadians(90))),
-                new Pose2d(Units.inchesToMeters(210), Units.inchesToMeters(120), new Rotation2d(Units.degreesToRadians(-90))),
-                new Pose2d(Units.inchesToMeters(285), Units.inchesToMeters(34), new Rotation2d(Units.degreesToRadians(0))),
-                new Pose2d(Units.inchesToMeters(330), Units.inchesToMeters(60), new Rotation2d(Units.degreesToRadians(90))),
-                new Pose2d(Units.inchesToMeters(285), Units.inchesToMeters(90), new Rotation2d(Units.degreesToRadians(180))),
-                new Pose2d(Units.inchesToMeters(30), Units.inchesToMeters(90), new Rotation2d(Units.degreesToRadians(180)))
+        int[][] waypointsRaw = {
+                {40,90,0},
+                {150,90,0},
+                {176,45,-120},
+                {135,45,120},
+                {150,90,0},
+                {250,96,30},
+                {270,141,135},
+                {210,120,-80},
+                {290,45,-45},
+                {330,45,45},
+                {300,92,175},
+                {180, 102, 180},
+                {30,102,180}
         };
+        Pose2d[] waypoints = new Pose2d[waypointsRaw.length];
+        for (int j = 0; j < waypointsRaw.length; j++) {
+                waypoints[j] = new Pose2d(Units.inchesToMeters(waypointsRaw[j][0]), Units.inchesToMeters(waypointsRaw[j][1]), new Rotation2d(Units.degreesToRadians(waypointsRaw[j][2])));
+        }
 
         Pose2d startPosition = waypoints[0];
 
-        TrajectoryConfig configA = new TrajectoryConfig(Units.feetToMeters(9), Units.feetToMeters(6));
+        TrajectoryConfig configA = new TrajectoryConfig(Units.feetToMeters(10), Units.feetToMeters(6));
         configA.setReversed(false);
         //configA.setEndVelocity(configA.getMaxVelocity());
         configA.addConstraint(new DifferentialDriveKinematicsConstraint(driveTrain.getDriveTrainKinematics(), configA.getMaxVelocity()));
         configA.addConstraint(new DifferentialDriveVoltageConstraint(driveTrain.getFeedforward(), driveTrain.getDriveTrainKinematics(),10));
-        configA.addConstraint(new CentripetalAccelerationConstraint(1.2)); // This is what we can change when we're actually testing
+        configA.addConstraint(new CentripetalAccelerationConstraint(1.7)); // This is what we can change when we're actually testing
 
         addCommands(new SetDriveShifters(driveTrain, Constants.DriveConstants.inSlowGear),
                 new SetOdometry(driveTrain, fieldSim, startPosition),
                 new SetDriveNeutralMode(driveTrain, 0));
 
+        double[] startVelocities = {
+                0,
+                2 * configA.getMaxVelocity()/3,
+                2 * configA.getMaxVelocity()/3,
+                2 * configA.getMaxVelocity()/3,
+                2 * configA.getMaxVelocity()/3,
+                2 * configA.getMaxVelocity()/3,
+                2 * configA.getMaxVelocity()/3,
+                3 * configA.getMaxVelocity()/4,
+                3 * configA.getMaxVelocity()/4,
+                3 * configA.getMaxVelocity()/4,
+                3 * configA.getMaxVelocity()/4,
+                3 * configA.getMaxVelocity()/4};
+        double[] endVelocities = {
+                2 * configA.getMaxVelocity()/3,
+                2 * configA.getMaxVelocity()/3,
+                2 * configA.getMaxVelocity()/3,
+                2 * configA.getMaxVelocity()/3,
+                2 * configA.getMaxVelocity()/3,
+                2 * configA.getMaxVelocity()/3,
+                3 * configA.getMaxVelocity()/4,
+                3 * configA.getMaxVelocity()/4,
+                3 * configA.getMaxVelocity()/4,
+                3 * configA.getMaxVelocity()/4,
+                3 * configA.getMaxVelocity()/4,
+                2 * configA.getMaxVelocity()/3};
+
         for(int i = 0; i < waypoints.length - 1; i++) {
-                if (i != 0) {
-                        configA.setEndVelocity(configA.getMaxVelocity());
-                        configA.setStartVelocity(configA.getMaxVelocity());
-                }
-                if (i == waypoints.length - 2) {
-                        configA.setEndVelocity(0);
-                }
+                configA.setStartVelocity(startVelocities[i]);
+                configA.setEndVelocity(endVelocities[i]);
+                
                 Trajectory trajectory = TrajectoryGenerator.generateTrajectory(waypoints[i],
                 List.of(),
                 waypoints[i + 1],
