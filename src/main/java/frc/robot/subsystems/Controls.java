@@ -22,17 +22,22 @@ Misc things that don't need their own subsystem
  */
 
 public class Controls extends SubsystemBase {
-    private final PowerDistributionPanel m_pdp;
-    private final DriveTrain m_driveTrain;
-    private final Shooter m_shooter;
-    private final Turret m_turret;
-    private final boolean init = false;
+    // Set up variables
+    private PowerDistributionPanel m_pdp;
+    private DriveTrain m_driveTrain;
+    private Shooter m_shooter;
+    private Turret m_turret;
+    private boolean init = false;
     /**
      * Creates a new ExampleSubsystem.
      */
     I2CLCD LCDDisplay = new I2CLCD(I2C.Port.kMXP, 0x27);
     AnalogInput PressureSensor = new AnalogInput(0);
     private boolean lcdOn = true;
+
+    AnalogInput PressureSensor = new AnalogInput(0);
+
+    // Set up subsystems
 
     public Controls(DriveTrain driveTrain, Shooter shooter, Turret turret, PowerDistributionPanel pdp) {
         m_driveTrain = driveTrain;
@@ -64,6 +69,7 @@ public class Controls extends SubsystemBase {
                 "hide", "join:Shooter/Input Currents");
     }
 
+    // Self-Explanatory functions
 
     public double getBatteryVoltage() {
         return m_pdp.getVoltage();

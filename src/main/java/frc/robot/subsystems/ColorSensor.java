@@ -27,6 +27,8 @@ public class ColorSensor extends SubsystemBase {
     /**
      * Creates a new ExampleSubsystem.
      */
+
+     // setup variables
     public boolean practiceField = false;
     public boolean isColor = false;
     public boolean working = false;
@@ -36,6 +38,7 @@ public class ColorSensor extends SubsystemBase {
     public TalonSRX motor = new TalonSRX(Constants.colorWheelMotor);
     private int colorID;
 
+    // ???
     public ColorSensor() {
         motor.setNeutralMode(NeutralMode.Brake);
     }
@@ -44,14 +47,17 @@ public class ColorSensor extends SubsystemBase {
         return sensor.getColor();
     }
 
+    // ???
     public double getIR() {
         return sensor.getIR();
     }
 
+    // get distance to color
     public int getProximity() {
         return sensor.getProximity();
     }
 
+    // ???
     public int panelColor() { // none = 0; red = 1; green = 2; blue = 3; yellow = 4
         if(practiceField) {
             if(getColor().red > getColor().green && getColor().green * 1.8 > getColor().red) {
@@ -78,7 +84,7 @@ public class ColorSensor extends SubsystemBase {
                 return 4;
             } else
                 return 0;
-        }
+        } //Determines the displayed color based on the quantative amount of said color???????
     }
 
     public void resetRotationControlVars() {
@@ -86,7 +92,7 @@ public class ColorSensor extends SubsystemBase {
         semiRotations = 0;
         realIntervals = 0;
         colorID = panelColor();
-    }
+    } //Resets RotationControlVars when method is called upon
 
     public boolean rotationControlComplete() {
     /*if(panelColor() == colorID && isColor == false){
@@ -124,8 +130,9 @@ public class ColorSensor extends SubsystemBase {
             default:
                 return - 1;
         }
-    }
+    }//returns a value that corresponds with a color based on the message
 
+    // Sets smartdashboard
     public void updateSmartDashboard() {
         String colorName = "Not Close Enough";
         SmartDashboard.putNumber("Red", getColor().red);

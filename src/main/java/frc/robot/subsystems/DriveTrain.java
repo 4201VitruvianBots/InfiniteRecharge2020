@@ -198,6 +198,8 @@ public class DriveTrain extends SubsystemBase {
         motors[3].configOpenloopRamp(0);
     }
 
+    // Self-explanatory functions
+
     public int getEncoderCount(int sensorIndex) {
         return driveMotors[sensorIndex].getSelectedSensorPosition();
     }
@@ -241,6 +243,7 @@ public class DriveTrain extends SubsystemBase {
             }
     }
 
+    // ???
     public double getMotorInputCurrent(int motorIndex) {
         return driveMotors[motorIndex].getSupplyCurrent();
     }
@@ -320,6 +323,7 @@ public class DriveTrain extends SubsystemBase {
         }
     }
 
+    // Make motors neutral
     public void setDriveTrainNeutralMode(int mode) {
         switch(mode) {
             case 2:

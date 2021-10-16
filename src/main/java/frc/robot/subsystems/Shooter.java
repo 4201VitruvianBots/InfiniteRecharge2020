@@ -98,6 +98,8 @@ public class Shooter extends SubsystemBase {
         initShuffleboard();
     }
 
+    //Self-explanatory commands
+
     public double getMotorInputCurrent(int motorIndex) {
         return outtakeMotors[motorIndex].getSupplyCurrent();
     }

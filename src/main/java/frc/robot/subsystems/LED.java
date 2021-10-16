@@ -59,7 +59,8 @@ public class LED extends SubsystemBase {
         setSolidColor();
 //    SmartDashboard.putNumber("Rainbows", rainbows);
 //    SmartDashboard.putNumber("Speed", speed);
-    }
+  }
+  // Set LED color based on RGB value
 
     public void setRGB(int red, int green, int blue) {
         this.red = (int) (red * 0.5);
@@ -67,10 +68,10 @@ public class LED extends SubsystemBase {
         this.green = (int) (green * 0.5);
     }
 
-    public void setSolidColor() {
-        for(int i = 0; i < LEDBuffer.getLength(); i++) {
-            LEDBuffer.setRGB(i, red, green, blue);
-        }
+  // Set LED color ???
+  public void setSolidColor(){
+    for(int i = 0; i < LEDBuffer.getLength(); i++){
+      LEDBuffer.setRGB(i, red, green, blue);
     }
 
     public void resetLED() {

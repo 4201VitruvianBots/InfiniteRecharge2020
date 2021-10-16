@@ -85,12 +85,14 @@ public class Indexer extends SubsystemBase {
         //initShuffleboard();
     }
 
-    public void toggleControlMode() {
-        if(controlMode == 0)
-            controlMode = 1;
-        else
-            controlMode = 0;
-    }
+  // Self-explanatory commands
+
+  public void toggleControlMode() {
+    if(controlMode == 0)
+      controlMode = 1;
+    else
+      controlMode = 0;
+  }
 
     public int getControlMode() {
         return controlMode;

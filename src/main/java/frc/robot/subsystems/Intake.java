@@ -48,9 +48,11 @@ public class Intake extends SubsystemBase {
 //    canPidController.setSmartMotionAllowedClosedLoopError(allowableError, 0);
     }
 
-    public boolean getIntakingState() {
-        return intaking;
-    }
+  // Self-explanatory functions
+  
+  public boolean getIntakingState() {
+    return intaking;
+  }
 
     public void setIntakingState(boolean state) {
         intaking = state;
