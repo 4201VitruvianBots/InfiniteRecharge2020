@@ -184,6 +184,10 @@ public class Turret extends SubsystemBase {
         turretHomeSensorLatch = state;
     }
 
+    public boolean getTurretLatch() {
+        return turretHomeSensorLatch;
+    }
+
     public void stopTurret() {
         setpoint = getTurretAngle();
     }
