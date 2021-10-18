@@ -57,35 +57,35 @@ public class AllyTrenchPathStraight extends SequentialCommandGroup {
                 new SetOdometry(driveTrain, new Pose2d()),
                 new SetDriveNeutralMode(driveTrain, 0),
                 new SetDriveShifters(driveTrain, false),
-                new SetAndHoldRpmSetpoint(shooter, vision, 3800),
-                new SetTurretRobotRelativeAngle(turret, - 25).withTimeout(0.25),
-                new AutoUseVisionCorrection(turret, vision).withTimeout(0.25),
-                new ConditionalCommand(new WaitCommand(0),
-                        new WaitCommand(0.5),
-                        shooter :: canShoot),
-                new AutoRapidFireSetpoint(shooter, indexer, intake, 1).withTimeout(1.5),
-                new SetIntakePiston(intake, true),
-                new SetDriveShifters(driveTrain, false),
+                // new SetAndHoldRpmSetpoint(shooter, vision, 3800),
+                // new SetTurretRobotRelativeAngle(turret, - 25).withTimeout(0.25),
+                // new AutoUseVisionCorrection(turret, vision).withTimeout(0.25),
+                // new ConditionalCommand(new WaitCommand(0),
+                //         new WaitCommand(0.5),
+                //         shooter :: canShoot),
+                // new AutoRapidFireSetpoint(shooter, indexer, intake, 1).withTimeout(1.5),
+                // new SetIntakePiston(intake, true),
+                // new SetDriveShifters(driveTrain, false),
                 new ParallelDeadlineGroup(
-                        startToTrenchCommand,
-                        new AutoControlledIntake(intake, indexer)
+                        startToTrenchCommand
+                        // new AutoControlledIntake(intake, indexer)
                 ),
-                new AutoControlledIntake(intake, indexer).withTimeout(0.25),
-                new SetIntakePiston(intake, false),
+                // new AutoControlledIntake(intake, indexer).withTimeout(0.25),
+                // new SetIntakePiston(intake, false),
                 new SetOdometry(driveTrain, new Pose2d()),
                 new ParallelDeadlineGroup(
-                        trenchToShootCommand,
-                        new SetTurretRobotRelativeAngle(turret, - 25).withTimeout(0.25),
-                        new SetAndHoldRpmSetpoint(shooter, vision, 3800)
-                ).andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
-                new AutoUseVisionCorrection(turret, vision).withTimeout(0.75),
-                new ConditionalCommand(new WaitCommand(0),
-                        new WaitCommand(0.5),
-                        shooter :: canShoot),
+                        trenchToShootCommand
+                        // new SetTurretRobotRelativeAngle(turret, - 25).withTimeout(0.25),
+                        // new SetAndHoldRpmSetpoint(shooter, vision, 3800)
+                ).andThen(() -> driveTrain.setMotorTankDrive(0, 0))
+                // new AutoUseVisionCorrection(turret, vision).withTimeout(0.75),
+                // new ConditionalCommand(new WaitCommand(0),
+                //         new WaitCommand(0.5),
+                //         shooter :: canShoot),
 //                new ConditionalCommand(new AutoRapidFireSetpoint(shooter, indexer, intake,6),
 //                                       new WaitCommand(0),
 //                                       vision::hasTarget)
-                new AutoRapidFireSetpoint2(shooter, indexer, intake, 6)
+                // new AutoRapidFireSetpoint2(shooter, indexer, intake, 6)
         );
     }
 }

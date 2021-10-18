@@ -49,7 +49,7 @@ public class DriveTrain extends SubsystemBase {
     private final double kV = DriveConstants.kvVoltSecondsPerMeter;
     private final double kA = DriveConstants.kaVoltSecondsSquaredPerMeter;
 
-    public double kP = 2.37;//3/21/21//Constants.DriveConstants.inSlowGear ? 1.89 : 2.74; //1.33
+    public double kP = 0.7;//3/21/21//Constants.DriveConstants.inSlowGear ? 1.89 : 2.74; //1.33
     public double kI = 0;
     public double kD = 0;
     public int controlMode = 0;
