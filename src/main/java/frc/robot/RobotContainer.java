@@ -8,42 +8,32 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.*;
-import edu.wpi.first.wpilibj.geometry.Pose2d;
-import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.ConditionalCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SelectCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.commands.LED.GetSubsystemStates;
-import frc.robot.commands.autonomous.routines.*;
-import frc.robot.commands.autonomous.routines.simulation.OpRoutineRed;
+import frc.robot.commands.autonomous.routines.AccuracyChallenge;
+import frc.robot.commands.autonomous.routines.AllyTrenchPathStraight;
+import frc.robot.commands.autonomous.routines.GetSOTMTestPowers;
 import frc.robot.commands.climber.EnableClimbMode;
 import frc.robot.commands.climber.SetClimberOutput;
+import frc.robot.commands.drivetrain.AlignToBall;
 import frc.robot.commands.drivetrain.BrakeWhileHeld;
-import frc.robot.commands.drivetrain.DriveBackwardDistance;
-import frc.robot.commands.drivetrain.DriveForwardDistance;
 import frc.robot.commands.drivetrain.SetArcadeDrive;
-import frc.robot.commands.drivetrain.SetDriveNeutralMode;
 import frc.robot.commands.drivetrain.SetDriveShifters;
-import frc.robot.commands.drivetrain.SetOdometry;
 import frc.robot.commands.indexer.EjectAll;
 import frc.robot.commands.indexer.FeedAll;
-import frc.robot.commands.intake.AutoControlledIntake;
 import frc.robot.commands.intake.ControlledIntake;
-import frc.robot.commands.intake.SetIntakePiston;
 import frc.robot.commands.intake.ToggleIntakePistons;
 import frc.robot.commands.shooter.RapidFireSetpoint;
 import frc.robot.commands.shooter.SetRpmSetpoint;
 import frc.robot.commands.shooter.TestAutomatedShooting;
 import frc.robot.commands.skyhook.SetSkyhookOutput;
-import frc.robot.commands.turret.AutoUseVisionCorrection;
 import frc.robot.commands.turret.SetTurretSetpointFieldAbsolute;
 import frc.robot.commands.turret.ShootOnTheMove;
 import frc.robot.commands.turret.ToggleTurretControlMode;
@@ -56,8 +46,6 @@ import frc.vitruvianlib.utils.JoystickWrapper;
 import frc.vitruvianlib.utils.XBoxTrigger;
 
 import java.util.Map;
-
-import static java.util.Map.entry;
 
 /**
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -250,10 +238,9 @@ public class RobotContainer {
         leftButtons[0].whileHeld(new SetDriveShifters(m_driveTrain, false));   // Top Button - Switch to high gear
         leftButtons[1].whileHeld(new SetDriveShifters(m_driveTrain, true));  // Bottom Button - Switch to low gear
 
+        rightButtons[0].whileHeld(new AlignToBall(m_driveTrain, m_vision, () -> leftJoystick.getRawAxis(1))); //Bottom (right) Button - Turn to powercells (Automated vision targeting
         rightButtons[1].whileHeld(new BrakeWhileHeld(m_driveTrain));
-//    rightButtons[0].whileHeld(new AlignToBall(m_driveTrain, m_vision, () -> leftJoystick.getRawAxis(1))); //Bottom (right) Button - Turn to powercells (Automated vision targeting
-//    rightButtons[1].whileHeld(new AlignToBall(m_driveTrain, m_vision, () -> leftJoystick.getRawAxis(1))); //Bottom (right) Button - Turn to powercells (Automated vision targeting
-
+        
         xBoxButtons[4].whenPressed(new ToggleIntakePistons(m_intake));
         xBoxLeftTrigger.whileHeld(new ControlledIntake(m_intake, m_indexer, xBoxController)); // Deploy intake
 
