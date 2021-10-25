@@ -46,7 +46,6 @@ public class AutoUseVisionCorrection extends CommandBase {
             if(m_vision.getValidTarget()) {
                 usingVisionSetpoint = true;
                 if(! turning) {
-                    m_vision.ledsOn();
                     setpoint = m_turret.getTurretAngle() + m_vision.getTargetX();
 
                     if(setpoint > m_turret.getMaxAngle()) {

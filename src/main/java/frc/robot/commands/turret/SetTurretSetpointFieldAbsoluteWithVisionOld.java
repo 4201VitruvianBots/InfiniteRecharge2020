@@ -58,11 +58,6 @@ public class SetTurretSetpointFieldAbsoluteWithVisionOld extends CommandBase {
     @Override
     public void execute() {
         if(m_turret.getControlMode() == 1) {
-            if(limelightDisabled)
-                m_vision.ledsOff(); //TODO: make this automatically go towards where it thinks the target is.
-            else
-                m_vision.ledsOn();
-
             if((Math.pow(m_xInput.getAsDouble(), 2) + Math.pow(m_yInput.getAsDouble(), 2)) >= Math.pow(deadZone, 2)) {
 
                 if(! directionTripped) {
