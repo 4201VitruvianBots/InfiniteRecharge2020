@@ -285,7 +285,7 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        return new AllyTrenchPathStraight(m_driveTrain, m_intake, m_indexer, m_turret, m_shooter, m_vision);
+        return new AllyTrenchPathSplineSim(m_driveTrain, m_intake, m_indexer, m_turret, m_shooter, m_vision, m_FieldSim);
         /*switch (selectedSkillsChallenge) {
             case AUTO_NAV_BARREL:
                 return new AutoNavBarrel(m_driveTrain, m_FieldSim);
