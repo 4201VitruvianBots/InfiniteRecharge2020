@@ -59,6 +59,7 @@ public class LED extends SubsystemBase {
         setSolidColor();
 //    SmartDashboard.putNumber("Rainbows", rainbows);
 //    SmartDashboard.putNumber("Speed", speed);
+    
   }
   // Set LED color based on RGB value
 
@@ -244,6 +245,9 @@ public class LED extends SubsystemBase {
     /*rainbows = SmartDashboard.getNumber("Rainbows", 0);
     speed = SmartDashboard.getNumber("Speed", 0);
     setBuffer();*/
+  }
+
+  public void ledPeriodic() {
     if(RobotBase.isReal()) {
       setLED();
       LEDStrip.setData(LEDBuffer);

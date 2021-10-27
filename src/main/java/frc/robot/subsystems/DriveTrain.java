@@ -49,7 +49,7 @@ public class DriveTrain extends SubsystemBase {
     private final double kV = DriveConstants.kvVoltSecondsPerMeter;
     private final double kA = DriveConstants.kaVoltSecondsSquaredPerMeter;
 
-    public double kP = 3.6294;//3/21/21//Constants.DriveConstants.inSlowGear ? 1.89 : 2.74; //1.33
+    public double kP = 2; //3.6294;//3/21/21//Constants.DriveConstants.inSlowGear ? 1.89 : 2.74; //1.33
     public double kI = 0;
     public double kD = 0;
     public int controlMode = 0;
@@ -459,10 +459,10 @@ public class DriveTrain extends SubsystemBase {
 
     private void updateSmartDashboard() {
         if (RobotBase.isReal()) {
-            SmartDashboardTab.putNumber("DriveTrain", "Left Encoder", getEncoderCount(0));
-            SmartDashboardTab.putNumber("DriveTrain", "Right Encoder", getEncoderCount(2));
-            SmartDashboardTab.putNumber("DriveTrain", "Left Distance", getWheelDistanceMeters(0));
-            SmartDashboardTab.putNumber("DriveTrain", "Right Distance", getWheelDistanceMeters(2));
+            // SmartDashboardTab.putNumber("DriveTrain", "Left Encoder", getEncoderCount(0));
+            // SmartDashboardTab.putNumber("DriveTrain", "Right Encoder", getEncoderCount(2));
+            // SmartDashboardTab.putNumber("DriveTrain", "Left Distance", getWheelDistanceMeters(0));
+            // SmartDashboardTab.putNumber("DriveTrain", "Right Distance", getWheelDistanceMeters(2));
             SmartDashboardTab.putNumber("DriveTrain", "xCoordinate",
                     Units.metersToFeet(getRobotPose().getTranslation().getX()));
             SmartDashboardTab.putNumber("DriveTrain", "yCoordinate",

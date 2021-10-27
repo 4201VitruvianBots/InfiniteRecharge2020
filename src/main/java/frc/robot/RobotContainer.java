@@ -66,7 +66,7 @@ public class RobotContainer {
     private final Skyhook m_skyhook = new Skyhook();
     private final ColorSensor m_colorSensor = new ColorSensor();
     private final LED m_led = new LED(m_colorSensor);
-    private final Controls m_controls = new Controls(m_driveTrain, m_shooter, m_turret, pdp);
+    // private final Controls m_controls = new Controls(m_driveTrain, m_shooter, m_turret, pdp);
 
     static JoystickWrapper leftJoystick = new JoystickWrapper(Constants.leftJoystick);
     static JoystickWrapper rightJoystick = new JoystickWrapper(Constants.rightJoystick);
@@ -178,7 +178,7 @@ public class RobotContainer {
                     () -> -leftJoystick.getRawAxis(1),
                     () -> rightJoystick.getRawAxis(0))));
 
-            m_led.setDefaultCommand(new GetSubsystemStates(this, m_led, m_indexer, m_intake, m_vision, m_turret, m_climber, m_colorSensor, m_controls));
+            m_led.setDefaultCommand(new GetSubsystemStates(this, m_led, m_indexer, m_intake, m_vision, m_turret, m_climber, m_colorSensor));
         }
         else {
             m_FieldSim.placeSkillPowercells(selectedSkillsChallenge);
@@ -365,7 +365,7 @@ public class RobotContainer {
     }
 
     public void initializeLogTopics() {
-        m_controls.initLogging();
+        //m_controls.initLogging();
     }
 
     /*private enum CommandSelector {
@@ -383,7 +383,7 @@ public class RobotContainer {
     }*/
 
     public void initalizeLogTopics() {
-        m_controls.initLogging();
+        //m_controls.initLogging();
     }
 
     public DriveTrain getRobotDrive() {
@@ -398,5 +398,9 @@ public class RobotContainer {
     public void simulationPeriodic() {
         if(!RobotState.isTest())
             m_FieldSim.simulationPeriodic();
+    }
+
+    public void ledPeriodic(){
+        m_led.ledPeriodic();
     }
 }

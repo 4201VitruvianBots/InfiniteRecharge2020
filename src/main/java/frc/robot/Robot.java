@@ -42,6 +42,7 @@ public class Robot extends TimedRobot {
         LiveWindow.disableAllTelemetry();
         m_robotContainer = new RobotContainer();
 //    badLog = new BadLogger(m_robotContainer);
+        addPeriodic(()->m_robotContainer.ledPeriodic(), 0.2, 0.01);
     }
 
     /**

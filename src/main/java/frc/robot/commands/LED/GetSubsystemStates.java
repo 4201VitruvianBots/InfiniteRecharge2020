@@ -24,7 +24,7 @@ public class GetSubsystemStates extends CommandBase {
     private final Turret m_turret;
     private final Climber m_climber;
     private final ColorSensor m_colorSensor;
-    private final Controls m_controls;
+    // private final Controls m_controls;
     private final RobotContainer m_robotContainer;
 
     /**
@@ -32,7 +32,7 @@ public class GetSubsystemStates extends CommandBase {
      *
      * @param The subsystem used by this command.
      */
-    public GetSubsystemStates(RobotContainer robotContainer, LED led, Indexer indexer, Intake intake, Vision vision, Turret turret, Climber climber, ColorSensor colorSensor, Controls controls) {
+    public GetSubsystemStates(RobotContainer robotContainer, LED led, Indexer indexer, Intake intake, Vision vision, Turret turret, Climber climber, ColorSensor colorSensor) {
         m_robotContainer = robotContainer;
         m_led = led;
         m_indexer = indexer;
@@ -41,7 +41,7 @@ public class GetSubsystemStates extends CommandBase {
         m_turret = turret;
         m_climber = climber;
         m_colorSensor = colorSensor;
-        m_controls = controls;
+        // m_controls = controls;
         // Use addRequirements() here to declare subsystem dependencies.
         addRequirements(led);
     }
@@ -94,7 +94,7 @@ public class GetSubsystemStates extends CommandBase {
 
     private boolean isRobotReady() {
         // && PSI is high (?). Save for comp
-        if(DriverStation.getInstance().isFMSAttached() && m_turret.getInitialHome() && m_controls.isPressureGood() == "Closed") // && PSI is high (?). Save for comp
+        if(DriverStation.getInstance().isFMSAttached() && m_turret.getInitialHome()) // && PSI is high (?). Save for comp
             return true;
         else return m_turret.getInitialHome();
     }
