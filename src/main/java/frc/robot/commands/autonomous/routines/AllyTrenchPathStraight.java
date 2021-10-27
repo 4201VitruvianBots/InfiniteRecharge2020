@@ -42,7 +42,7 @@ public class AllyTrenchPathStraight extends SequentialCommandGroup {
         startToTrenchPath.add(new Pose2d(-3.3, 0, new Rotation2d(0)));
         var startToTrenchCommand = TrajectoryUtils.generateRamseteCommand(driveTrain, startToTrenchPath, configA);
 
-        var configB = new TrajectoryConfig(Units.feetToMeters(6), Units.feetToMeters(4));
+        var configB = new TrajectoryConfig(Units.feetToMeters(2), Units.feetToMeters(1));
         configB.setReversed(false);
         configB.setEndVelocity(0);
         configB.addConstraint(new DifferentialDriveKinematicsConstraint(driveTrain.getDriveTrainKinematics(), configB.getMaxVelocity()));

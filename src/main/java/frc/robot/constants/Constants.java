@@ -131,9 +131,9 @@ public final class Constants {
         // for *your* robot's drive.
         // The Robot Characterization Toolsuite provides a convenient tool for obtaining these
         // values for your robot.
-        public static final double ksVolts = 0.77833;//3/21/21//inSlowGear ? 0.683 : 0.81;
-        public static final double kvVoltSecondsPerMeter = 2.1253       ;//3/21/21//3.21inSlowGear ? 3.19 : 1.74;
-        public static final double kaVoltSecondsSquaredPerMeter = 0.64934;//3/21/21//inSlowGear ? 0.227 : 0.301;
+        public static final double ksVolts = 0.73806;//3/21/21//inSlowGear ? 0.683 : 0.81;
+        public static final double kvVoltSecondsPerMeter = 1.0154;//3/21/21//3.21inSlowGear ? 3.19 : 1.74;
+        public static final double kaVoltSecondsSquaredPerMeter = 0.28925;//3/21/21//inSlowGear ? 0.227 : 0.301;
 
         // These are example values only - DO NOT USE THESE FOR YOUR OWN ROBOT!
         // These characterization values MUST be determined either experimentally or theoretically
