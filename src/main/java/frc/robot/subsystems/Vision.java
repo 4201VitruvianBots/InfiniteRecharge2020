@@ -218,7 +218,7 @@ public class Vision extends SubsystemBase {
     }
 
     public boolean hasPowerCell() {
-        return oak_1_intake.getEntry("found").getBoolean(false);
+        return oak_1_intake.getEntry("tv").getDouble(0) == 1;
     }
 
     private void initShuffleboard() {

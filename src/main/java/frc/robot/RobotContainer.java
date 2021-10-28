@@ -238,7 +238,9 @@ public class RobotContainer {
         leftButtons[0].whileHeld(new SetDriveShifters(m_driveTrain, false));   // Top Button - Switch to high gear
         leftButtons[1].whileHeld(new SetDriveShifters(m_driveTrain, true));  // Bottom Button - Switch to low gear
 
-        rightButtons[0].whileHeld(new AlignToBall(m_driveTrain, m_vision, () -> leftJoystick.getRawAxis(1))); //Bottom (right) Button - Turn to powercells (Automated vision targeting
+        rightButtons[0].whileHeld(new AlignToBall(m_driveTrain, m_vision,
+                () -> -leftJoystick.getRawAxis(1),
+                () -> rightJoystick.getRawAxis(0))); //Bottom (right) Button - Turn to powercells (Automated vision targeting
         rightButtons[1].whileHeld(new BrakeWhileHeld(m_driveTrain));
         
         xBoxButtons[4].whenPressed(new ToggleIntakePistons(m_intake));

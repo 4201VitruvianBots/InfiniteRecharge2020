@@ -8,6 +8,7 @@
 package frc.robot.commands.drivetrain;
 
 import edu.wpi.first.wpilibj.controller.PIDController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Vision;
@@ -16,22 +17,24 @@ import java.util.function.DoubleSupplier;
 
 public class AlignToBall extends CommandBase {
 
-    private final double P_TERM = 0.05;
+    private final double P_TERM = 0.02;
     private final double I_TERM = 0;
     private final double D_TERM = 0;
 
-    private final DriveTrain driveTrain;
-    private final Vision vision;
-    private final DoubleSupplier throttle;
+    private final DriveTrain m_driveTrain;
+    private final Vision m_vision;
+    private final DoubleSupplier m_throttle;
+    private final DoubleSupplier m_turn;
     private final PIDController pid = new PIDController(P_TERM, I_TERM, D_TERM);
 
-    public AlignToBall(DriveTrain driveTrain, Vision vision, DoubleSupplier throttle) {
+    public AlignToBall(DriveTrain driveTrain, Vision vision, DoubleSupplier throttle, DoubleSupplier turn) {
         // Use addRequirements() here to declare subsystem dependencies.
-        this.driveTrain = driveTrain;
-        this.vision = vision;
-        this.throttle = throttle;
-        addRequirements(this.driveTrain);
-        addRequirements(this.vision);
+        this.m_driveTrain = driveTrain;
+        this.m_vision = vision;
+        this.m_throttle = throttle;
+        this.m_turn = turn;
+        addRequirements(this.m_driveTrain);
+        addRequirements(this.m_vision);
     }
 
     // Called when the command is initially scheduled.
@@ -42,14 +45,24 @@ public class AlignToBall extends CommandBase {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        if(vision.hasPowerCell()) {
-            double setpoint = driveTrain.getAngle() + vision.getPowerCellX();
+        double joystickY = (Math.abs(m_throttle.getAsDouble()) > 0.05) ? m_throttle.getAsDouble() : 0;
+        double joystickX = (Math.abs(m_turn.getAsDouble()) > 0.05) ? m_turn.getAsDouble() : 0;
 
-            double leftVoltage = throttle.getAsDouble() * 12.0 + pid.calculate(driveTrain.getAngle(), setpoint);
-            double rightVoltage = throttle.getAsDouble() * 12.0 - pid.calculate(driveTrain.getAngle(), setpoint);
+        double throttle = joystickY;
+        throttle = throttle < 0 ? Math.max(- 0.7, throttle) : throttle;
+//        double turn = /*(m_driveTrain.getDriveShifterStatus() ? 0.5 : 0.50.35) **/ joystickX;
+        double turn = 0;
+        if(m_vision.hasPowerCell()) {
+            double setpoint = m_driveTrain.getAngle() - m_vision.getPowerCellX();
 
-            driveTrain.setVoltageOutput(leftVoltage, rightVoltage);
+            double turnAdjustment = pid.calculate(m_driveTrain.getAngle(), setpoint);
+
+            turn += turnAdjustment;
+//            turn += Math.max(Math.min(turnAdjustment, 0.6), -0.6);
         }
+
+        m_driveTrain.setMotorArcadeDrive(-throttle, -turn);
+
     }
 
     // Called once the command ends or is interrupted.
