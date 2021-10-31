@@ -18,7 +18,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.commands.LED.GetSubsystemStates;
 import frc.robot.commands.autonomous.routines.AccuracyChallenge;
-import frc.robot.commands.autonomous.routines.AllyTrenchPathStraight;
+import frc.robot.commands.autonomous.routines.EnemyTrenchPath;
 import frc.robot.commands.autonomous.routines.GetSOTMTestPowers;
 import frc.robot.commands.climber.EnableClimbMode;
 import frc.robot.commands.climber.SetClimberOutput;
@@ -108,7 +108,7 @@ public class RobotContainer {
 
     private SkillsChallengeSelector selectedSkillsChallenge = SkillsChallengeSelector.GALACTIC_SEARCH; // Change this
 
-    private FieldSim m_FieldSim;
+    private FieldSim m_fieldSim;
 
     SendableChooser<Integer> m_autoChooser = new SendableChooser();
 
@@ -170,7 +170,7 @@ public class RobotContainer {
 //        for(int i = 0; i < 6; i++)
 //            m_powercells[i] = new Powercell("PowerCell_" + i);
 
-        m_FieldSim = new FieldSim(m_driveTrain, m_turret, m_shooter);
+        m_fieldSim = new FieldSim(m_driveTrain, m_turret, m_shooter);
 
         if(RobotBase.isReal()) {
             m_driveTrain.setDefaultCommand(new SequentialCommandGroup(new SetDriveShifters(m_driveTrain, Constants.DriveConstants.inSlowGear), 
@@ -181,7 +181,7 @@ public class RobotContainer {
             m_led.setDefaultCommand(new GetSubsystemStates(this, m_led, m_indexer, m_intake, m_vision, m_turret, m_climber, m_colorSensor));
         }
         else {
-            m_FieldSim.placeSkillPowercells(selectedSkillsChallenge);
+            m_fieldSim.placeSkillPowercells(selectedSkillsChallenge);
             m_driveTrain.setDefaultCommand(new SetArcadeDrive(m_driveTrain, m_intake,
                     () -> testController.getRawAxis(1),
                     () -> testController.getRawAxis(2)));
@@ -192,7 +192,7 @@ public class RobotContainer {
 
         m_climber.setDefaultCommand(new SetClimberOutput(m_climber, xBoxController));
         m_skyhook.setDefaultCommand(new SetSkyhookOutput(m_climber, m_skyhook, () -> rightJoystick.getRawAxis(0)));
-        m_ShootOnTheMove = new ShootOnTheMove(m_turret, m_shooter, m_driveTrain, m_led, m_vision, new SimulationShoot(m_FieldSim, true),  m_FieldSim);
+        m_ShootOnTheMove = new ShootOnTheMove(m_turret, m_shooter, m_driveTrain, m_led, m_vision, new SimulationShoot(m_fieldSim, true),  m_fieldSim);
     }
 
     /**
@@ -270,10 +270,10 @@ public class RobotContainer {
         xBoxButtons[4].whenPressed(new ToggleIntakePistons(m_intake));
         xBoxLeftTrigger.whileHeld(new ControlledIntake(m_intake, m_indexer, xBoxController)); // Deploy intake
 
-        xBoxButtons[1].whenPressed(new AccuracyChallenge(m_driveTrain, m_shooter, m_indexer, m_FieldSim, 0));      // B - Green Zone
-        xBoxButtons[2].whenPressed(new AccuracyChallenge(m_driveTrain, m_shooter, m_indexer, m_FieldSim, 1));      // X - Yellow Zone
-        xBoxButtons[3].whenPressed(new AccuracyChallenge(m_driveTrain, m_shooter, m_indexer, m_FieldSim, 2));      // Y - Blue Zone
-        xBoxButtons[0].whenPressed(new AccuracyChallenge(m_driveTrain, m_shooter, m_indexer, m_FieldSim, 3));      // A - Red Zone
+        xBoxButtons[1].whenPressed(new AccuracyChallenge(m_driveTrain, m_shooter, m_indexer, m_fieldSim, 0));      // B - Green Zone
+        xBoxButtons[2].whenPressed(new AccuracyChallenge(m_driveTrain, m_shooter, m_indexer, m_fieldSim, 1));      // X - Yellow Zone
+        xBoxButtons[3].whenPressed(new AccuracyChallenge(m_driveTrain, m_shooter, m_indexer, m_fieldSim, 2));      // Y - Blue Zone
+        xBoxButtons[0].whenPressed(new AccuracyChallenge(m_driveTrain, m_shooter, m_indexer, m_fieldSim, 3));      // A - Red Zone
     }
 
     /**
@@ -287,7 +287,8 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        return new AllyTrenchPathStraight(m_driveTrain, m_intake, m_indexer, m_turret, m_shooter, m_vision);
+//        return new AllyTrenchPathStraight(m_driveTrain, m_intake, m_indexer, m_turret, m_shooter, m_vision);
+        return new EnemyTrenchPath(m_driveTrain, m_intake, m_indexer, m_turret, m_shooter, m_vision, m_fieldSim);
         /*switch (selectedSkillsChallenge) {
             case AUTO_NAV_BARREL:
                 return new AutoNavBarrel(m_driveTrain, m_FieldSim);
@@ -340,11 +341,11 @@ public class RobotContainer {
     public void teleOpInit() {
         if(RobotBase.isReal()) {
             m_driveTrain.resetEncoderCounts();
-            m_driveTrain.resetOdometry(m_FieldSim.getRobotPose(), m_FieldSim.getRobotPose().getRotation());
+            m_driveTrain.resetOdometry(m_fieldSim.getRobotPose(), m_fieldSim.getRobotPose().getRotation());
             m_driveTrain.setDriveTrainNeutralMode(0); // Half and half
         } else {
             m_driveTrain.resetEncoderCounts();
-            m_driveTrain.resetOdometry(m_FieldSim.getRobotPose(), m_FieldSim.getRobotPose().getRotation());
+            m_driveTrain.resetOdometry(m_fieldSim.getRobotPose(), m_fieldSim.getRobotPose().getRotation());
         }
     }
 
@@ -355,11 +356,11 @@ public class RobotContainer {
     public void autonomousInit() {
         if (RobotBase.isReal()) {
             m_driveTrain.resetEncoderCounts();
-            m_driveTrain.resetOdometry(m_driveTrain.getRobotPose(), m_FieldSim.getRobotPose().getRotation());
+            m_driveTrain.resetOdometry(m_driveTrain.getRobotPose(), m_fieldSim.getRobotPose().getRotation());
         } else {
-            m_FieldSim.initSim();
+            m_fieldSim.initSim();
             m_driveTrain.resetEncoderCounts();
-            m_driveTrain.resetOdometry(m_FieldSim.getRobotPose(), m_FieldSim.getRobotPose().getRotation());
+            m_driveTrain.resetOdometry(m_fieldSim.getRobotPose(), m_fieldSim.getRobotPose().getRotation());
         }
     }
 
@@ -393,13 +394,13 @@ public class RobotContainer {
     }
 
     public void simulationInit() {
-        m_FieldSim.initSim();
+        m_fieldSim.initSim();
         //m_driveTrain.setSimPose(new Pose2d(5,5, new Rotation2d()));
     }
 
     public void simulationPeriodic() {
         if(!RobotState.isTest())
-            m_FieldSim.simulationPeriodic();
+            m_fieldSim.simulationPeriodic();
     }
 
     public void ledPeriodic(){
