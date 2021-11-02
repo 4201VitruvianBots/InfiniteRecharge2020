@@ -18,12 +18,14 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.commands.LED.GetSubsystemStates;
 import frc.robot.commands.autonomous.routines.AccuracyChallenge;
+import frc.robot.commands.autonomous.routines.AllyTrenchPathStraight;
 import frc.robot.commands.autonomous.routines.EnemyTrenchPath;
 import frc.robot.commands.autonomous.routines.GetSOTMTestPowers;
 import frc.robot.commands.climber.EnableClimbMode;
 import frc.robot.commands.climber.SetClimberOutput;
 import frc.robot.commands.drivetrain.AlignToBall;
 import frc.robot.commands.drivetrain.BrakeWhileHeld;
+import frc.robot.commands.drivetrain.DriveForwardDistance;
 import frc.robot.commands.drivetrain.SetArcadeDrive;
 import frc.robot.commands.drivetrain.SetDriveShifters;
 import frc.robot.commands.indexer.EjectAll;
@@ -287,8 +289,9 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-//        return new AllyTrenchPathStraight(m_driveTrain, m_intake, m_indexer, m_turret, m_shooter, m_vision);
-        return new EnemyTrenchPath(m_driveTrain, m_intake, m_indexer, m_turret, m_shooter, m_vision, m_fieldSim);
+        // return new DriveForwardDistance(m_driveTrain, m_fieldSim, 2.5);
+       return new AllyTrenchPathStraight(m_driveTrain, m_intake, m_indexer, m_turret, m_shooter, m_vision);
+        // return new EnemyTrenchPath(m_driveTrain, m_intake, m_indexer, m_turret, m_shooter, m_vision, m_fieldSim);
         /*switch (selectedSkillsChallenge) {
             case AUTO_NAV_BARREL:
                 return new AutoNavBarrel(m_driveTrain, m_FieldSim);
