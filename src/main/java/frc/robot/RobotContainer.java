@@ -252,7 +252,7 @@ public class RobotContainer {
         xBoxButtons[1].whileHeld(new SetRpmSetpoint(m_shooter, m_vision, 3410)); // [B] Med-range
         xBoxButtons[3].whileHeld(new SetRpmSetpoint(m_shooter, m_vision, 3900)); // [Y] Long-range
         xBoxPOVButtons[0].whileHeld(new EjectAll(m_indexer, m_intake));                                  //Top POV - Eject All
-        xBoxButtons[0].whileHeld(new TestAutomatedShooting(m_driveTrain, m_shooter, m_turret, m_vision));
+        //xBoxButtons[0].whileHeld(new TestAutomatedShooting(m_driveTrain, m_shooter, m_turret, m_vision));
 
         //xBoxButtons[5].whileHeld(new RapidFire(m_shooter, m_indexer, m_intake, 3700));              // Set Distance RPM
         xBoxRightTrigger.whileHeld(new RapidFireSetpoint(m_shooter, m_indexer, m_intake));            // flywheel on toggle

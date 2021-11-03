@@ -53,7 +53,7 @@ public class AlignToBall extends CommandBase {
 //        double turn = /*(m_driveTrain.getDriveShifterStatus() ? 0.5 : 0.50.35) **/ joystickX;
         double turn = 0;
         if(m_vision.hasPowerCell()) {
-            double setpoint = m_driveTrain.getAngle() - m_vision.getPowerCellX();
+            double setpoint = m_driveTrain.getAngle() + m_vision.getPowerCellX();
 
             double turnAdjustment = pid.calculate(m_driveTrain.getAngle(), setpoint);
 
@@ -61,7 +61,7 @@ public class AlignToBall extends CommandBase {
 //            turn += Math.max(Math.min(turnAdjustment, 0.6), -0.6);
         }
 
-        m_driveTrain.setMotorArcadeDrive(-throttle, -turn);
+        m_driveTrain.setMotorArcadeDrive(throttle, turn);
 
     }
 
