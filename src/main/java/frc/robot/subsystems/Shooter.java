@@ -15,10 +15,17 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.controller.LinearQuadraticRegulator;
+import edu.wpi.first.wpilibj.estimator.KalmanFilter;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboardTab;
-import edu.wpi.first.wpilibj.util.Units;
+import edu.wpi.first.wpilibj.system.LinearSystem;
+import edu.wpi.first.wpilibj.system.LinearSystemLoop;
+import edu.wpi.first.wpilibj.system.plant.LinearSystemId;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpiutil.math.Nat;
+import edu.wpi.first.wpiutil.math.VecBuilder;
+import edu.wpi.first.wpiutil.math.numbers.N1;
 import frc.robot.constants.Constants;
 
 /*
@@ -69,6 +76,29 @@ public class Shooter extends SubsystemBase {
 //    public SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(kS, kV, kA);
 
     private final double metersPerSecondToRPM = 315; // How much to multiply a speed by to get ideal RPM. This is only a preliminary estimate
+
+    private final LinearSystem<N1, N1, N1> m_flywheelPlant =
+            LinearSystemId.identifyVelocitySystem(kV, kA);
+
+    private final KalmanFilter<N1, N1, N1> m_observer =
+            new KalmanFilter<>(
+                    Nat.N1(),
+                    Nat.N1(),
+                    m_flywheelPlant,
+                    VecBuilder.fill(3.0), // How accurate we think our model is
+                    VecBuilder.fill(0.01), // How accurate we think our encoder
+                    // data is
+                    0.020);
+
+    private final LinearQuadraticRegulator<N1, N1, N1> m_controller =
+            new LinearQuadraticRegulator<>(
+                    m_flywheelPlant,
+                    VecBuilder.fill(8.0), // Velocity error tolerance
+                    VecBuilder.fill(12.0), // Control effort (voltage) tolerance
+                    0.020);
+
+    private final LinearSystemLoop<N1, N1, N1> m_loop =
+            new LinearSystemLoop<>(m_flywheelPlant, m_controller, m_observer, 12.0, 0.020);
 
     public Shooter(Vision vision, PowerDistributionPanel pdp) {
         // Setup shooter motors (Falcons)
@@ -129,9 +159,16 @@ public class Shooter extends SubsystemBase {
     }
 
     private void updateRPMSetpoint() {
-        if(setpoint >= 0)
-            outtakeMotors[0].set(ControlMode.Velocity, RPMtoFalconUnits(setpoint));
-        else
+        if(setpoint >= 0) {
+//            outtakeMotors[0].set(ControlMode.Velocity, RPMtoFalconUnits(setpoint));
+            m_loop.setNextR(VecBuilder.fill(setpoint * 2 * Math.PI));
+
+            m_loop.correct(VecBuilder.fill(getAngularVelocity(0));
+            m_loop.predict(0.020);
+
+            double nextVoltage = m_loop.getU(0);
+            setPower(nextVoltage / 12);
+        } else
             setPower(0);
     }
 
@@ -149,6 +186,10 @@ public class Shooter extends SubsystemBase {
 
     public boolean encoderAtSetpoint(int motorIndex) {
         return (Math.abs(outtakeMotors[motorIndex].getClosedLoopError()) < 100.0);
+    }
+
+    public double getAngularVelocity(int motorIndex) {
+        return outtakeMotors[motorIndex].getSelectedSensorVelocity() * ((600.0 * 2 * Math.PI)/ 2048.0);
     }
 
     public double getRPM(int motorIndex) {
