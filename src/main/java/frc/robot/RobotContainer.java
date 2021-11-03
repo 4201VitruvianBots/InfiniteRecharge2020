@@ -248,11 +248,10 @@ public class RobotContainer {
         xBoxButtons[4].whenPressed(new ToggleIntakePistons(m_intake));
         xBoxLeftTrigger.whileHeld(new ControlledIntake(m_intake, m_indexer, xBoxController)); // Deploy intake
 
-        xBoxButtons[2].whileHeld(new SetRpmSetpoint(m_shooter, m_vision, 1000));//green                  // X - Set RPM Medium
-        xBoxButtons[1].whileHeld(new SetRpmSetpoint(m_shooter, m_vision, 3410));//blue                  // B - Set RPM Medium
+        xBoxButtons[0].whileHeld(new SetRpmSetpoint(m_shooter, m_vision, 1000)); // [A] Short-range
+        xBoxButtons[1].whileHeld(new SetRpmSetpoint(m_shooter, m_vision, 3410)); // [B] Med-range
+        xBoxButtons[3].whileHeld(new SetRpmSetpoint(m_shooter, m_vision, 3900)); // [Y] Long-range
         xBoxPOVButtons[0].whileHeld(new EjectAll(m_indexer, m_intake));                                  //Top POV - Eject All
-        xBoxButtons[3].whileHeld(new SetRpmSetpoint(m_shooter, m_vision, 3900));//yellow                     // Y - Set RPM Far
-        //xBoxButtons[0].whileHeld(new SetRpmSetpoint(m_shooter, m_vision, 3500));//red                 // A - Set RPM Close
         xBoxButtons[0].whileHeld(new TestAutomatedShooting(m_driveTrain, m_shooter, m_turret, m_vision));
 
         //xBoxButtons[5].whileHeld(new RapidFire(m_shooter, m_indexer, m_intake, 3700));              // Set Distance RPM
