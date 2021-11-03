@@ -153,7 +153,7 @@ public class SetTurretSetpointFieldAbsolute extends CommandBase {
                 m_turret.setRobotCentricSetpoint(setpoint);
 //                m_turret.setFieldCentricSetpoint(setpoint);
             } else {
-                m_turret.setPercentOutput(m_controller.getRawAxis(0) * 0.2); //manual mode
+                m_turret.setPercentOutput(m_controller.getRawAxis(0) * 0.3); //manual mode
             }
         }
     }

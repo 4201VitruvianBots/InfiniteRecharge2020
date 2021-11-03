@@ -163,7 +163,7 @@ public class Shooter extends SubsystemBase {
 //            outtakeMotors[0].set(ControlMode.Velocity, RPMtoFalconUnits(setpoint));
             m_loop.setNextR(VecBuilder.fill(setpoint * 2 * Math.PI));
 
-            m_loop.correct(VecBuilder.fill(getAngularVelocity(0));
+            m_loop.correct(VecBuilder.fill(getAngularVelocity(0)));
             m_loop.predict(0.020);
 
             double nextVoltage = m_loop.getU(0);
