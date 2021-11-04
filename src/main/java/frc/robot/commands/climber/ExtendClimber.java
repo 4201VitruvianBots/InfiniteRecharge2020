@@ -45,7 +45,9 @@ public class ExtendClimber extends CommandBase {
         if((Timer.getFPGATimestamp() - timestamp) < 0.2) {
             //rotate the motor counter clockwise to nick the ratchet
             m_climber.setClimberOutput(- 0.25);
-        } else
+        } else (Timer.getFPGATimestamp() - timestamp) < 0.5)
+            m_climber.setClimberOutput(0.5);
+        else
             m_climber.setClimberOutput(0);
 //    SmartDashboardTab.putString("Climber", "EnableClimbMode", "Executing");
 //    SmartDashboardTab.putNumber("Climber", "Time Delta", (Timer.getFPGATimestamp() - timestamp));
@@ -61,6 +63,6 @@ public class ExtendClimber extends CommandBase {
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-        return (Timer.getFPGATimestamp() - timestamp) > 0.2;
+        return (Timer.getFPGATimestamp() - timestamp) > 0.5;
     }
 }
