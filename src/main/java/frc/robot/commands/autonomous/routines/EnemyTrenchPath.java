@@ -30,13 +30,13 @@ import java.util.Arrays;
 public class EnemyTrenchPath extends SequentialCommandGroup {
     public EnemyTrenchPath(DriveTrain driveTrain, Intake intake, Indexer indexer, Turret turret, Shooter shooter, Vision vision, FieldSim fieldSim) {
         Pose2d[] startToEnemyTrench = {
-            new Pose2d(12.557047,7.275692, new Rotation2d(Units.degreesToRadians(0))),
+            new Pose2d(12.75,7.275692, new Rotation2d(Units.degreesToRadians(0))),
             new Pose2d(10.1,7.275692, new Rotation2d(Units.degreesToRadians(0)))
         };
         Pose2d[] enemyTrenchToShoot = {
-                new Pose2d(12.557047,7.275692, new Rotation2d(Units.degreesToRadians(0))),
-                new Pose2d(10.557047,7.275692, new Rotation2d(Units.degreesToRadians(0))),
-                new Pose2d(10.1,5, new Rotation2d(Units.degreesToRadians(0)))
+                new Pose2d(10.1,7.275692, new Rotation2d(Units.degreesToRadians(0))),
+                new Pose2d(12,6.275692, new Rotation2d(Units.degreesToRadians(-90))),
+                new Pose2d(12,3, new Rotation2d(Units.degreesToRadians(-90)))
         };
 
         TrajectoryConfig configA = new TrajectoryConfig(Units.feetToMeters(6), Units.feetToMeters(10));
@@ -68,9 +68,9 @@ public class EnemyTrenchPath extends SequentialCommandGroup {
                             new AutoControlledIntake(intake, indexer)
                     ).andThen(()->driveTrain.setMotorTankDrive(0,0)),
                     new SetIntakePiston(intake, false),
-                    enemyTrenchToShootCommand.andThen(()->driveTrain.setMotorTankDrive(0,0)),
+                    enemyTrenchToShootCommand,
                     new SetAndHoldRpmSetpoint(shooter, vision, 3800),
-                    new SetTurretRobotRelativeAngle(turret, -25).withTimeout(0.5),
+                    new SetTurretRobotRelativeAngle(turret, -75).withTimeout(0.5),
                     new AutoUseVisionCorrection(turret, vision).withTimeout(0.5),
                     new ConditionalCommand(new WaitCommand(0),
                                            new WaitCommand(0.5),

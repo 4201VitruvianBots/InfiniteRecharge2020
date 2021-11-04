@@ -51,7 +51,7 @@ public class Turret extends SubsystemBase {
     int kI_Zone = 900;    //900 // 254: 1/kP?
     int kMaxIAccum = 1000000;//kI_Zone *3; //500000;    //900
     int kErrorBand = 50;//degreesToEncoderUnits(0.5);
-    int kCruiseVelocity = 14000;
+    int kCruiseVelocity = 10000;
     int kMotionAcceleration = kCruiseVelocity * 10;
     double minAngle = - 90;  // -135;
     double maxAngle = 90;   // 195;
