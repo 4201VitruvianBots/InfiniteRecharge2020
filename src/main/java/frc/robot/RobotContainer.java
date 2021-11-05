@@ -89,7 +89,6 @@ public class RobotContainer {
     private enum CommandSelector {
         DRIVE_STRAIGHT,
         ALLIANCE_TRENCH_STRAIGHT,
-        ALLIANCE_TRENCH_SPLINE,
         ENEMY_TRENCH,
         SHOOT_AND_DRIVE_BACK,
         SHOOT_AND_DRIVE_FORWARD,
@@ -249,7 +248,7 @@ public class RobotContainer {
         xBoxLeftTrigger.whileHeld(new ControlledIntake(m_intake, m_indexer, xBoxController)); // Deploy intake
 
         xBoxButtons[0].whileHeld(new SetRpmSetpoint(m_shooter, m_vision, 1000)); // [A] Short-range
-        xBoxButtons[1].whileHeld(new SetRpmSetpoint(m_shooter, m_vision, 5000)); // [B] Med-range
+        xBoxButtons[1].whileHeld(new SetRpmSetpoint(m_shooter, m_vision, 4000)); // [B] Med-range
         xBoxButtons[3].whileHeld(new SetRpmSetpoint(m_shooter, m_vision, 4800)); // [Y] Long-range
         xBoxPOVButtons[0].whileHeld(new EjectAll(m_indexer, m_intake));                                  //Top POV - Eject All
         //xBoxButtons[0].whileHeld(new TestAutomatedShooting(m_driveTrain, m_shooter, m_turret, m_vision));
@@ -289,7 +288,7 @@ public class RobotContainer {
 
     public Command getAutonomousCommand() {
         // return new DriveForwardDistance(m_driveTrain, m_fieldSim, 2.5);
-//       return new AllyTrenchPathStraight(m_driveTrain, m_intake, m_indexer, m_turret, m_shooter, m_vision);
+       return new AllyTrenchPathStraight(m_driveTrain, m_intake, m_indexer, m_turret, m_shooter, m_vision);
          return new EnemyTrenchPath(m_driveTrain, m_intake, m_indexer, m_turret, m_shooter, m_vision, m_fieldSim);
         /*switch (selectedSkillsChallenge) {
             case AUTO_NAV_BARREL:

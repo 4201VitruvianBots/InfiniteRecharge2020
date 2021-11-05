@@ -39,8 +39,8 @@ public class Vision extends SubsystemBase {
     private final double VERTICAL_TARGET_PIXEL_THRESHOLD = 1;
 
     // NetworkTables for reading vision data
-    private final NetworkTable oak_d_goal;
-    private final NetworkTable oak_1_intake;
+    private final NetworkTable goal_camera;
+    private final NetworkTable intake_camera;
 
     // Subsystems that will be controlled based on vision data
     private final DriveTrain m_driveTrain;
@@ -56,13 +56,25 @@ public class Vision extends SubsystemBase {
     private double lastValidTargetTime;
     private boolean validTarget;
 
+    private int goal_camera_type = 1; // 2: PhotonVision
     public Vision(DriveTrain driveTrain, Turret turret) {
         m_driveTrain = driveTrain;
         m_turret = turret;
 
         // Init vision NetworkTables
-        oak_d_goal = NetworkTableInstance.getDefault().getTable("OAK-D_Goal");
-        oak_1_intake = NetworkTableInstance.getDefault().getTable("OAK-1_Intake");
+        switch (goal_camera_type) {
+            case 2:
+                goal_camera = NetworkTableInstance.getDefault().getTable("photonvision");
+                break;
+            case 1:
+                goal_camera = NetworkTableInstance.getDefault().getTable("limelight");
+                break;
+            case 0:
+            default:
+                goal_camera = NetworkTableInstance.getDefault().getTable("OAK-D_Goal");
+                break;
+        }
+        intake_camera = NetworkTableInstance.getDefault().getTable("OAK-1_Intake");
 
         //initShuffleboard();
     }
@@ -90,15 +102,29 @@ public class Vision extends SubsystemBase {
 
     // Limelight interaction functions
     public double getTargetY() {
-        return oak_d_goal.getEntry("ty").getDouble(0);
+        switch (goal_camera_type) {
+            case 2:
+                return goal_camera.getEntry("targetPitch").getDouble(0);
+            case 1:
+            case 0:
+            default:
+                return goal_camera.getEntry("ty").getDouble(0);
+        }
     }
 
     public double getTargetX() {
-        return oak_d_goal.getEntry("tx").getDouble(0);
+        switch (goal_camera_type) {
+            case 2:
+                return goal_camera.getEntry("targetYaw").getDouble(0);
+            case 1:
+            case 0:
+            default:
+                return goal_camera.getEntry("tx").getDouble(0);
+        }
     }
 
     public double getTargetDistance() {
-        return oak_d_goal.getEntry("tz").getDouble(0);
+        return goal_camera.getEntry("tz").getDouble(0);
     }
 
     public double getFilteredTargetX() {
@@ -143,35 +169,70 @@ public class Vision extends SubsystemBase {
     // More Limelight interaction functions
 
     public boolean hasTarget() {
-        return oak_d_goal.getEntry("tv").getDouble(0) == 1;
+        switch (goal_camera_type) {
+            case 2:
+                return goal_camera.getEntry("hasTarget").getBoolean(false);
+            case 1:
+            case 0:
+            default:
+                return goal_camera.getEntry("tv").getDouble(0) == 1;
+        }
+    }
+
+    public void ledsOn() {
+        switch (goal_camera_type) {
+            case 2:
+                goal_camera.getEntry("ledMode").setNumber(1);
+                break;
+            case 1:
+                goal_camera.getEntry("ledMode").setNumber(3);
+                break;
+            case 0:
+            default:
+                break;
+        }
+    }
+
+    public void ledsOff() {
+        switch (goal_camera_type) {
+            case 2:
+                goal_camera.getEntry("ledMode").setNumber(0);
+                break;
+            case 1:
+                goal_camera.getEntry("ledMode").setNumber(1);
+                break;
+            case 0:
+            default:
+                break;
+        }
     }
 
     public double getTargetArea() {
-        return oak_d_goal.getEntry("ta").getDouble(0);
+        return goal_camera.getEntry("ta").getDouble(0);
     }
 
     public double getTargetSkew() {
-        return oak_d_goal.getEntry("ts").getDouble(0);
+        return goal_camera.getEntry("ts").getDouble(0);
     }
 
     public double getPipelineLatency() {
-        return oak_d_goal.getEntry("tl").getDouble(0);
+        return goal_camera.getEntry("tl").getDouble(0);
     }
 
     public double getTargetShort() {
-        return oak_d_goal.getEntry("tshort").getDouble(0);
+        return goal_camera.getEntry("tshort").getDouble(0);
     }
 
     public double getTargetLong() {
-        return oak_d_goal.getEntry("tlong").getDouble(0);
+        return goal_camera.getEntry("tlong").getDouble(0);
     }
 
     public double getHorizontalSidelength() {
-        return oak_d_goal.getEntry("thor").getDouble(0);
+        return goal_camera.getEntry("thor").getDouble(0);
     }
 
     public double getVerticalSidelength() {
-        return oak_d_goal.getEntry("tvert").getDouble(0);
+        return goal_camera.getEntry("tvert").getDouble(0);
     }
 
     
@@ -208,7 +269,7 @@ public class Vision extends SubsystemBase {
     // Read ball position data from OAK-1_Intake
     public double getPowerCellX() {
         double[] nullValue = {-99};
-        var values = oak_1_intake.getEntry("ta").getDoubleArray(nullValue);
+        var values = intake_camera.getEntry("ta").getDoubleArray(nullValue);
 
         if(values[0] == -99) {
             return 0;
@@ -218,7 +279,7 @@ public class Vision extends SubsystemBase {
     }
 
     public boolean hasPowerCell() {
-        return oak_1_intake.getEntry("tv").getDouble(0) == 1;
+        return intake_camera.getEntry("tv").getDouble(0) == 1;
     }
 
     private void initShuffleboard() {
