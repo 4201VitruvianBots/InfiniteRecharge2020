@@ -30,7 +30,7 @@ import java.util.List;
 
 public class AllyTrenchPathStraight extends SequentialCommandGroup {
     public AllyTrenchPathStraight(DriveTrain driveTrain, Intake intake, Indexer indexer, Turret turret, Shooter shooter, Vision vision) {
-        TrajectoryConfig configA = new TrajectoryConfig(Units.feetToMeters(8), Units.feetToMeters(4));
+        TrajectoryConfig configA = new TrajectoryConfig(Units.feetToMeters(6), Units.feetToMeters(4));
         configA.setReversed(true);
         configA.setEndVelocity(0);
         configA.addConstraint(new DifferentialDriveKinematicsConstraint(driveTrain.getDriveTrainKinematics(), configA.getMaxVelocity()));
@@ -58,13 +58,13 @@ public class AllyTrenchPathStraight extends SequentialCommandGroup {
                 new SetDriveNeutralMode(driveTrain, 0),
                 new SetDriveShifters(driveTrain, false),
                 new SetIntakePiston(intake, true),
-                new SetAndHoldRpmSetpoint(shooter, vision, 5000),
+                new SetAndHoldRpmSetpoint(shooter, vision, 3800),
                 new SetTurretRobotRelativeAngle(turret, -25).withTimeout(0.25),
                 new AutoUseVisionCorrection(turret, vision).withTimeout(0.25),
                 new ConditionalCommand(new WaitCommand(0),
                         new WaitCommand(0.5),
                         shooter :: canShoot),
-                new AutoRapidFireSetpoint(shooter, indexer, intake, 1.5).withTimeout(4),
+                new AutoRapidFireSetpoint(shooter, indexer, intake, 1.5).withTimeout(2.5),
                 new SetDriveShifters(driveTrain, false),
                 new ParallelDeadlineGroup(
                         startToTrenchCommand,
@@ -76,7 +76,7 @@ public class AllyTrenchPathStraight extends SequentialCommandGroup {
                 new ParallelDeadlineGroup(
                         trenchToShootCommand,
                         new SetTurretRobotRelativeAngle(turret, -25).withTimeout(0.25),
-                        new SetAndHoldRpmSetpoint(shooter, vision, 5000)
+                        new SetAndHoldRpmSetpoint(shooter, vision, 3800)
                 ).andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
                 new AutoUseVisionCorrection(turret, vision).withTimeout(0.75),
                 new ConditionalCommand(new WaitCommand(0),

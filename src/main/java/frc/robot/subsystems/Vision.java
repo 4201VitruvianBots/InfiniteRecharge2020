@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboardTab;
 import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpiutil.net.PortForwarder;
 
 /*
 Subsystem for interacting with the Limelight and OpenSight vision systems
@@ -75,7 +76,12 @@ public class Vision extends SubsystemBase {
                 break;
         }
         intake_camera = NetworkTableInstance.getDefault().getTable("OAK-1_Intake");
-
+        
+        PortForwarder.add(5800, "10.42.1.42", 5800);
+        PortForwarder.add(5801, "10.42.1.42", 5801);
+        PortForwarder.add(4200, "10.42.1.100", 80);
+        PortForwarder.add(4201, "10.42.1.100", 5801);
+        PortForwarder.add(4202, "10.42.1.100", 5802);
         //initShuffleboard();
     }
 

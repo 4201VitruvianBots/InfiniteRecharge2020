@@ -70,7 +70,7 @@ public class EnemyTrenchPath extends SequentialCommandGroup {
                     ).andThen(()->driveTrain.setMotorTankDrive(0,0)),
                     new SetIntakePiston(intake, false),
                     enemyTrenchToShootCommand,
-                    new SetAndHoldRpmSetpoint(shooter, vision, 5000),
+                    new SetAndHoldRpmSetpoint(shooter, vision, 3800),
                     new SetTurretRobotRelativeAngle(turret, -75).withTimeout(0.5),
                     new AutoUseVisionCorrection(turret, vision).withTimeout(0.5),
                     new ConditionalCommand(new WaitCommand(0),
