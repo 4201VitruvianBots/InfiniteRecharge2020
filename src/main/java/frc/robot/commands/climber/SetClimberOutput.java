@@ -25,7 +25,7 @@ public class SetClimberOutput extends CommandBase {
     private boolean currentDirection = true;
     private boolean movable, switchDirection;
     private double timestamp;
-    private int direction;
+    private int lastDirection;
 
     /*
      * Creates a new ExampleCommand.
@@ -47,35 +47,38 @@ public class SetClimberOutput extends CommandBase {
     @Override
     public void execute() {
         double input = Math.abs(m_controller.getRawAxis(5)) > 0.2 ? m_controller.getRawAxis(5) : 0;
-        direction = input > 0 ? 1 : input < 0 ? - 1 : 0;
+        
+        int direction = input > 0 ? 1 : input < 0 ? - 1 : 0;
+        // direction = (int) Math.signum(input);
+        // might be better
         if(m_climber.getClimbState()) {
             SmartDashboardTab.putNumber("Climber", "Direction", direction);
             SmartDashboardTab.putBoolean("Climber", "currentDirection", currentDirection);
 
-            if(direction != 0) {
+            if(direction != lastDirection) {
                 timestamp = Timer.getFPGATimestamp();
-                if(direction == 1 && ! currentDirection) {
-                    movable = false;
+                movable = false;
+                if(direction == 1 ) {
                     switchDirection = true;
-                } else if(direction <= 0 && currentDirection) {
-                    movable = false;
+                } else if(direction <= 0) {
                     switchDirection = false;
                 }
             }
 
             if(movable) {
-//        SmartDashboardTab.putString("Climber", "SetClimberOutput", "Manual Control");
-//        SmartDashboardTab.putNumber("Climber", "Input", input);
-
-//        double output = (m_climber.getClimberPosition() < -512) && (input < 0) ? 0 : input;
                 double output = input;
                 m_climber.setClimberOutput(output);
             } else {
                 if(switchDirection)
                     climberReleaseSequence();
-                else
-                    climberRetractSequence();
+                else {
+                    m_climber.setClimbPiston(false);
+                    movable = true;
+                    currentDirection = true;
+                    //climberRetractSequence();
+                }
             }
+            lastDirection = direction;
         }
     }
 
